@@ -2,3 +2,5 @@
 !*.*
 !*/
 !Makefile
+
+output.log
