@@ -1,0 +1,71 @@
+1. How is the speedup of a parallel program defined?
+
+The speedup of a parallel program is defined as the ratio of the execution time of a sequential program to the execution time of a parallel program running on multiple processors/cores.
+It measures how much faster the parallel program runs compared to the sequential program.
+
+---
+
+2. What is the formal definition of Amdahl's law and what relationship does it describe for parallel programs (explain in your own words)? Why/How is this significant?
+
+Amdahl's law is a formula that describes the theoretical maximum speedup that can be achieved by parallelizing a program. It states that the speedup of a program is limited by the fraction of the program that cannot be parallelized.
+
+The formal definition of Amdahl's law is as follows:
+
+speedup = 1 / [(1 - p) + (p / n)]
+
+where p is the fraction of the program that can be parallelized, and n is the number of processors/cores used for parallel execution.
+
+This law describes the relationship between the speedup of a program and the amount of parallelizable code.
+If a program has a small fraction of parallelizable code, then the maximum achievable speedup will be limited by that fraction,
+no matter how many processors are used. This means that adding more processors beyond a certain point will not improve the speedup of the program significantly.
+
+---
+
+3. Compute the theoretical speedup of a program that spends 10% of its time in unparallelizable, sequential regions for 6 cores and for a hypothetically unlimited number of cores.
+
+Assuming the program spends 10% of its time in unparallelizable regions, the fraction of parallelizable code is 1 - 0.1 = 0.9.
+
+For 6 cores, the speedup can be calculated as:
+
+speedup = 1 / [(1 - 0.9) + (0.9 / 6)] = 4
+
+For an unlimited number of cores, the speedup approaches the limit of:
+
+speedup_limit = 1 / (1 - 0.9) = 10
+
+---
+
+4. Compute the theoretical speedup of a program that spends 20% of its time in unparallelizable, sequential regions for 6 cores and for a hypothetically unlimited number of cores.
+Assuming the program spends 20% of its time in unparallelizable regions, the fraction of parallelizable code is 1 - 0.2 = 0.8.
+
+For 6 cores, the speedup can be calculated as:
+
+speedup = 1 / [(1 - 0.8) + (0.8 / 6)] = 3
+
+For an unlimited number of cores, the speedup approaches the limit of:
+
+speedup_limit = 1 / (1 - 0.8) = 5
+
+---
+
+5. Given an algorithm of time complexity O(n^3). How large (in %) can the unparallelizable, sequential region be at most, such that a speedup of 10 can be achieved using 64 cores?
+
+Assuming the algorithm has a sequential region that cannot be parallelized, let p be the fraction of the code that is parallelizable. Then, the speedup can be calculated using Amdahl's law as:
+
+speedup = 1 / [(1 - p) + (p / n)]
+
+For a speedup of 10 and 64 cores, we have:
+
+10 = 1 / [(1 - p) + (p / 64)]
+
+Solve for p:
+10 - 10 p + (10 p / 64) = 1
+- 10 p + (10 p / 64) = -9
+10 p - (10 p / 64) = 9
+(64 p - p) / 64 = 0.9
+63 p / 64 = 0.9
+
+p = (0.9 * 63) / 64
+p = 0.8859
+
+Therefore, the unparallelizable, sequential region can be at most 100% - 88.59% = 11.41% of the total algorithm time.
