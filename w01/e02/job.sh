@@ -13,7 +13,22 @@
 # Enforce exclusive node allocation, do not share with other jobs
 #SBATCH --exclusive
 
-export OMP_NUM_THREADS=16
+export OMP_NUM_THREADS=1
+echo "1 thread:"
+echo "slow:"
 ./slow
+echo "medium:"
 ./medium
+echo "fast:"
+./fast
+echo ""
+echo ""
+
+export OMP_NUM_THREADS=8
+echo "8 threads:"
+echo "slow:"
+./slow
+echo "medium:"
+./medium
+echo "fast:"
 ./fast

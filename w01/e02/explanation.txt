@@ -1,0 +1,6 @@
+- Create a table and figures that illustrate the measured data and study them. What effects can you observe?
+The slow and medium program are slower when parallelized.
+
+
+- How stable are the measurements when running the experiments multiple times?
+The messurments are pretty stable so it does not change much when executing them more often.

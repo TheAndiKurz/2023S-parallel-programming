@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -fopenmp -std=gnu11
+CFLAGS = -fopenmp -std=gnu11 -O3
 TARGETS = slow medium fast
 
 all: $(TARGETS)
