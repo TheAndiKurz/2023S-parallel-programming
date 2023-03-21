@@ -65,7 +65,7 @@ Solve for p:
 (64 p - p) / 64 = 0.9
 63 p / 64 = 0.9
 
-p = (0.9 * 63) / 64
-p = 0.8859
+p = (0.9 * 64) / 63
+p = 0.9143
 
-Therefore, the unparallelizable, sequential region can be at most 100% - 88.59% = 11.41% of the total algorithm time.
+Therefore, the unparallelizable, sequential region can be at most 100% - 91.43% = 08.57% of the total algorithm time.
