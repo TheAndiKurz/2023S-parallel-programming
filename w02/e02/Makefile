@@ -22,7 +22,7 @@ column_major_hadamard.o: column_major_hadamard.c
 	$(CC) $(LFLAGS) -c $<
 
 run: all
-	./row_major_hadamard && ./column_major_hadamard make clean
+	./row_major_hadamard && ./column_major_hadamard && make clean
 clean:
 	@rm *.o ${BINS}
 

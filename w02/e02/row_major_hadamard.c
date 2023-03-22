@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main() {
-    const int n = 1000;
+#define N 2
 
-    int a[n][n], b[n][n], c[n][n];
-    for(size_t i = 0; i < n; ++i) {
-        for(size_t j = 0; j < n; ++j) {
+int main() {
+
+    int32_t a[N][N], b[N][N], c[N][N] = {0};
+
+    for(size_t i = 0; i < N; ++i) {
+        for(size_t j = 0; j < N; ++j) {
             c[i][j] = a[i][j] * b[i][j];
         }
     }
