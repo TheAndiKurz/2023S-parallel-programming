@@ -1,3 +1,5 @@
+
+# ignore every file without a extension except Makefile
 *
 !*.*
 !*/
@@ -6,3 +8,6 @@
 output.log
 
 *.zip
+
+
+.vscode
