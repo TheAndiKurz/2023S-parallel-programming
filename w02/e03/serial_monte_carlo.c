@@ -34,14 +34,24 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    int n = atoi(argv[1]);
+
     double startTime = omp_get_wtime();
 
-    double pi_aprx = monte_carlo(atoi(argv[1]));
+    double pi_aprx = monte_carlo(n);
 
     double endTime = omp_get_wtime();
 
+    double exc_time = endTime - startTime;
+
     printf("Monte Carlo Pi: %lf\n", pi_aprx);
-    printf("time: %lf\n", endTime - startTime);
+    printf("time: %lf\n", exc_time);
+
+    FILE *f = fopen("values.csv", "a+");
+
+    fprintf(f, "Serial, %lf, %lf\n", exc_time, pi_aprx);
+
+    fclose(f);
 
     return 0;
 }
