@@ -9,24 +9,31 @@
 #include "my_timer.h"
 
 // Default size of image
-//#define X 1920
-//#define Y 1080
-#define X 1280
-#define Y 720
-#define MAX_ITER 10000
+#define X 1920
+#define Y 1080
+//#define X 1280
+//#define Y 720
+#define MAX_ITER 80
+
+#define CX_SCALE 4.9
+#define CX_OFFS 2.8
+#define CY_SCALE 2.8 
+#define CY_OFFS 1.4
 
 void calc_mandelbrot(uint8_t image[Y][X]) {
   for (int i = 0; i < X; i++){
     for (int j = 0; j < Y; j++){
-      float x = 0;
-      float y = 0;
-      float cx = ((i/(float)X)*3.5)-2.5;
-      float cy = ((j/(float)Y)*2)-1;
+      // code adapted from https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set
+      float x = 0, y = 0;
+      float x2 = 0, y2 = 0;
+      float cx = ((i/(float)X)*CX_SCALE)-CX_OFFS;
+      float cy = ((j/(float)Y)*CY_SCALE)-CY_OFFS;
       int iteration = 0;
-      while (x*x + y*y <= 4 && iteration < MAX_ITER) {
-        float x_temp = x*x - y*y + cx;
+      while (x2 + y2 <= 4 && iteration < MAX_ITER) {
         y = 2*x*y + cy;
-        x = x_temp;
+        x = x2 - y2 + cx;
+        x2 = x*x;
+        y2 = y*y; 
         iteration++;
       }
       uint8_t norm_iteration = (iteration/(float)MAX_ITER)*255;

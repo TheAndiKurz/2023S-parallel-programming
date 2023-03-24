@@ -1,0 +1,8 @@
+* How would you improve program performance?
+Performance did drastically improve using optimization flags.
+Especially -Ofast helped, probably as it sets the -ffast-math flag. This optimization also impacts the output image, as some pixels have a slightly different brightness, as without the ffast-math flag. 
+Another way performance was increased, is by saving a few calculations, using an extra variable. This code is implemented in mandelbrot_op.c brings execution time from 11.6s down to 9.61s (both using -Ofast). 
+
+* Can you think of a way to parallelize this algorithm?
+The two for loops, traversing the images pixels, could be easely parallelized, as they don't depend on other iterations. 
+The inner while loop can not easely be parallelized.

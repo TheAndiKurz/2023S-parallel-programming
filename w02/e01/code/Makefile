@@ -1,7 +1,7 @@
 CFLAGS = -std=gnu11 -Wall -Wextra -lm -fopenmp
 CC     = /usr/local/bin/gcc
 
-OPTIMIZED_FILES=$(addprefix mandelbrot, O0 O1 O2 O3 Ofast Os)
+OPTIMIZED_FILES=$(addprefix mandelbrot, O0 O1 O2 O3 Ofast Os O3_ffast-math)
 
 .PHONY: all
 all: mandelbrot ${OPTIMIZED_FILES}
@@ -29,3 +29,6 @@ mandelbrot: mandelbrot.c
 
 %Os: %.c
 	${CC} $< -o $@ ${CFLAGS} -Os
+
+%O3_ffast-math: %.c
+		${CC} $< -o $@ ${CFLAGS} -O3 -ffast-math
