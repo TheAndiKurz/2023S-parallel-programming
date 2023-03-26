@@ -1,17 +1,28 @@
+
+.PHONY =  all clean
 CC = gcc
-CFLAGS = -fopenmp -std=gnu11 -O3
-TARGETS = slow fast
 
-all: $(TARGETS)
+CFLAGS = -std=c11 -Wall -Werror -Wextra -Wpedantic
+LFLAGS =
 
-slow: slow.c
-	$(CC) $(CFLAGS) -o $@ $<
+BINS = row_major_hadamard column_major_hadamard
 
-fast: fast.c
-	$(CC) $(CFLAGS) -o $@ $<
+all: ${BINS}
 
-.PHONY: clean
+row_major_hadamard: row_major_hadamard.o
+	$(CC) $^ $(CFLAGS) -o $@
 
+row_major_hadamard.o: row_major_hadamard.c
+	$(CC) $(LFLAGS) -c $<
+
+column_major_hadamard: column_major_hadamard.o
+	$(CC) $^ $(CFLAGS) -o $@
+
+column_major_hadamard.o: column_major_hadamard.c
+	$(CC) $(LFLAGS) -c $<
+
+run: all
+	./row_major_hadamard && ./column_major_hadamard && make clean
 clean:
-	rm -f $(TARGETS)
+	@rm *.o ${BINS}
 

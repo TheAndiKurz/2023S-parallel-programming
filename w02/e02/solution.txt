@@ -1,0 +1,19 @@
+-   For c arrays are stored in row major order. That means consecutive row iteration will lead
+    to the least ammount of cache misses which will only be cold misses whenever a new line is accessed. 
+
+    When the Hadamart product is performed in row major order f can be calculated as follows:
+
+    f_ij(n, s) = n * n / s  # calculate the number of cache lines needed to access the whole matrix
+
+    Set associativity does not change cache performance for sequential read.
+
+
+-   For column major order f will be the following:
+
+    We assume n to be significantly larger than s (n >> s). In the worst case this will lead to a 
+    cache miss for every acessed element, as every cache line is only accessed a long time after it was previously accessed.
+
+    f_ji(n, s) = n * n # calculate the number of elements in the matrix
+
+
+The theoretical expected cache miss rates could not be confirmed on the lcc. No idea why.

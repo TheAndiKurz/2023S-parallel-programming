@@ -11,3 +11,5 @@ output.log
 *.csv
 
 .vscode
+.ccls-cache
+.ccls
