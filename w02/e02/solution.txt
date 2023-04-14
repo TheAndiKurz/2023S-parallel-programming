@@ -3,7 +3,7 @@
 
     When the Hadamart product is performed in row major order f can be calculated as follows:
 
-    f_ij(n, s) = n * n / s  # calculate the number of cache lines needed to access the whole matrix
+    f_ij(n, s) = n * n * 4 / s  # calculate the number of cache lines needed to access the whole matrix
 
     Set associativity does not change cache performance for sequential read.
 
