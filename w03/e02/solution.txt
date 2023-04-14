@@ -1,0 +1,2 @@
+Improvements: 
+  - Matrix initialization could also be done in parallel.
