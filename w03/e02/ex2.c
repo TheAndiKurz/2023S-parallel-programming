@@ -21,6 +21,15 @@
             if(!(arr)[i]) PERROR_GOTO(label); \
         } \
     } while(0)
+#ifdef OPTIMIZED
+#define VARIANT "Padding and Blocking / Tiling"
+#elif PADDING
+#define VARIANT "Padding"
+#elif BLOCK
+#define VARIANT "Blocking / Tiling"
+#else
+#define VARIANT "Given"
+#endif
 
 #if defined(OPTIMIZED) || defined(PADDING)
 
@@ -95,12 +104,13 @@ int main(int argc, char** argv) {
     }
 
     double start_time = omp_get_wtime();
+    long threads = omp_get_max_threads();
 #pragma omp parallel default(none) shared(n, a, b, c, local_res)
     {
         // matrix multiplication
 #if defined(OPTIMIZED) || defined(BLOCK)
 
-        int block_size = n / (omp_get_max_threads());
+        int block_size = n / threads;
         block_size = block_size < 1 ? 1 : block_size;
 
 #pragma omp parallel for default(none) shared(n, a, b, c, block_size)
@@ -162,8 +172,9 @@ int main(int argc, char** argv) {
 #endif
     }
     double end_time = omp_get_wtime();
-    add_time(VARIANT, threads, exc_time);
-    printf("res: %lu, time: %2.2f seconds\n", res, end_time - start_time);
+    double exec_time = end_time - start_time;
+    add_time(VARIANT, threads, exec_time);
+    printf("res: %lu, time: %2.2f seconds\n", res, exec_time);
 
     // cleanup
     free(local_res);

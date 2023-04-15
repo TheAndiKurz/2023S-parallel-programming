@@ -1,2 +1,4 @@
 Improvements: 
-  - Matrix initialization could also be done in parallel.
+  - Matrix initialization could also be done in parallel. (will not improve the time)
+  - make sure that  local_res can not introduce false sharing(padding)
+  - split matrix into blocks for the multiplication step (smaller matrix block gets multiplied at a time)
