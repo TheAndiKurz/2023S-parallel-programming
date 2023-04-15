@@ -13,14 +13,12 @@
 # Enforce exclusive node allocation, do not share with other jobs
 #SBATCH --exclusive
 
-echo "serial:"
-./serial_monte_carlo 700000000
 
-echo ""
-echo "" 
-
-for i in $(seq 1 8);
-do 
-    echo "Parallel $i:"
-    ./parallel_monte_carlo $i 700000000
+# for threads in [1, 2, 4, 8] use monte_carlo with 500000000 samples
+for threads in 1 2 4 8; do
+  export OMP_NUM_THREADS=$threads
+  echo "threads: $threads"
+  ./monte_carlo_atomic $threads 500000000
+  ./monte_carlo_critical $threads 500000000
+  ./monte_carlo_reduction $threads 500000000
 done
