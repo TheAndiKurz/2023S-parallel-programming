@@ -1,3 +1,4 @@
+#include "../../tools/time/time.h"
 #include <errno.h>
 #include <math.h>
 #include <omp.h>
@@ -161,6 +162,7 @@ int main(int argc, char** argv) {
 #endif
     }
     double end_time = omp_get_wtime();
+    add_time(VARIANT, threads, exc_time);
     printf("res: %lu, time: %2.2f seconds\n", res, end_time - start_time);
 
     // cleanup
