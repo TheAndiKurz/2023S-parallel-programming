@@ -2,10 +2,10 @@
 .PHONY =  all clean
 CC = gcc
 
-CFLAGS = -std=c11 -Wall -Werror -Wextra -Wpedantic
+CFLAGS = -std=c11 -Wall -Werror -Wextra -Wpedantic -fopenmp
 LFLAGS =
 
-BINS = ex2.c
+BINS = ex2
 
 all: ${BINS}
 

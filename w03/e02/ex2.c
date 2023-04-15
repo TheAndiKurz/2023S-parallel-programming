@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <math.h>
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,16 +81,23 @@ int main(int argc, char** argv) {
     double start_time = omp_get_wtime();
 #pragma omp parallel default(none) shared(n, a, b, c, local_res)
     {
-        // matrix multiplication
-#pragma omp parallel for default(none) shared(n, a, b, c)
-        for(long i = 0; i < n; ++i) {
-            for(long j = 0; j < n; ++j) {
-                for(long k = 0; k < n; ++k) {
-                    c[i][j] += a[i][k] * b[k][j];
+        int block_size = n / (omp_get_max_threads());
+        block_size = block_size < 1 ? 1 : block_size;
+
+#pragma omp parallel for default(none) shared(n, a, b, c, block_size)
+        for(long row_block = 0; row_block < n; row_block += block_size) {
+            for(long col_block = 0; col_block < n; col_block += block_size) {
+                for(long k_block = 0; k_block < n; k_block += block_size) {
+                    for(long i = row_block; i < row_block + block_size && i < n; ++i) {
+                        for(long j = col_block; j < col_block + block_size && j < n; ++j) {
+                            for(long k = k_block; k < k_block + block_size && k < n; ++k) {
+                                c[i][j] += a[i][k] * b[k][j];
+                            }
+                        }
+                    }
                 }
             }
         }
-
         // sum of matrix c
 #pragma omp parallel for default(none) shared(n, a, b, c, local_res)
         for(long i = 0; i < n; ++i) {
