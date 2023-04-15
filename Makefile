@@ -1,2 +1,2 @@
 %.zip: %/
-	cd $< && zip -r ../$@ . 
+	zip -r $@ $< tools 
