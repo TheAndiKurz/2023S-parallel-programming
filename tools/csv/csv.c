@@ -23,14 +23,14 @@ void csv_add_line(csv_file* file, char** line) {
     size_t line_len = file->line_len;
 
     char line_str[CELL_LEN * line_len];
+    line_str[0] = '\0';
     strncpy(line_str, line[0], CELL_LEN);
-    for(size_t i = 0; i < line_len; ++i) {
+    for(size_t i = 1; i < line_len; ++i) {
         strncat(line_str, ",", CELL_LEN);
         strncat(line_str, line[i], CELL_LEN);
     }
-    strncat(line_str, "\n", CELL_LEN);
 
-    fprintf(file->csv_file, "%s", line_str);
+    fprintf(file->csv_file, "%s\n", line_str);
 }
 
 void csv_close(csv_file* file) {
