@@ -14,6 +14,9 @@ grouped = df.groupby(['threads', 'name'])['time'].agg(['mean', 'std']).unstack()
 # Create a grouped bar chart with error bars showing the standard deviation
 ax = grouped['mean'].plot(kind='bar', yerr=grouped['std'], rot=0,)
 
+# Set the x-axis tick labels to the 'threads' column values
+ax.set_xticklabels(grouped['threads'])
+
 # Set the title and axis labels
 ax.set_title('Execution Time by Number of Threads and Name')
 ax.set_xlabel('Threads')
