@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the data from the CSV file
-df = pd.read_csv('times.csv')
+df = pd.read_csv('times.csv').sort_values(by=['name'], ascending=True)
 
 # Group the data by 'threads' and 'name' columns and calculate the mean and standard deviation
 grouped = df.groupby(['threads', 'name'])['time'].agg(['mean', 'std']).unstack().reset_index()
@@ -21,6 +21,6 @@ ax.set_xlabel('Threads')
 ax.set_ylabel('Time (seconds)')
 
 # Add legend
-ax.legend(title='Name')
+ax.legend(title='Name', bbox_to_anchor=(1.02, 1), loc='upper left', borderaxespad=0)
 
-plt.savefig('performance.png')
+plt.savefig('performance.png', bbox_inches='tight')
