@@ -3,7 +3,7 @@
 # Execute job in the partition "lva" unless you have special requirements.
 #SBATCH --partition=lva
 # Name your job to be able to identify it later
-#SBATCH --job-name test
+#SBATCH --job-name s01e02_fa
 # Redirect output stream to this file
 #SBATCH --output=output.log
 # Maximum number of tasks (=processes) to start in total
@@ -14,14 +14,19 @@
 #SBATCH --exclusive
 
 
-# for threads in [1, 2, 4, 8] use monte_carlo with 500000000 samples
-for threads in 1 2 4 8; do
-  export OMP_NUM_THREADS=$threads
-  echo "threads: $threads"
-  ./monte_carlo_local_sum $threads 500000000
-  ./monte_carlo_array $threads 500000000
-  ./monte_carlo_array_8 $threads 500000000
-  ./monte_carlo_array_56 $threads 500000000
-done
+# run file $1 with $2 num threads
+runNTimes () {
+  for n in $(seq $2); do
+    echo -n $1,  
+    ./mandelbrot$1
+    echo ""
+  done
+}
 
-#500000000
+# echo header
+echo "optimization, time"
+
+# 
+for o in O0 O1 O2 O3 Ofast Os; do
+  runNTimes o 10
+done

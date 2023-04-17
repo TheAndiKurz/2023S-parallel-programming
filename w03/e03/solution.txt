@@ -1,0 +1,7 @@
+To archive best performance, the padding should be set, that it fills the remaining cache line. 
+In this case the size of variable is 8 byes. Assuming a cache line has 64 bytes, the padding should be 56 bytes.
+
+The version using a private variable is the fastest and also has the best approximation.
+Using the 56 byte padding comes close in time and also has a better approximation, as when using no padding.
+
+Using the padded array also has the best cache-miss rate of 5.2%, outperforming both other versions (8.4% no padding, 6% local sum).
