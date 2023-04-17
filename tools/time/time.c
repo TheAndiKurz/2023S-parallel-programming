@@ -37,14 +37,14 @@ void add_time_value(char* name, size_t threads, double time, double value) {
 
     FILE* f = fopen("times.csv", "r");
     if(f == NULL) {
-        char* header[3] = { "name", "threads", "time", "value"};
+        char* header[4] = { "name", "threads", "time", "value" };
         csv = csv_create("times.csv", 4, header);
     } else {
         fclose(f);
         csv = csv_append("times.csv", 4);
     }
 
-    char* line[3];
+    char* line[4];
     line[0] = malloc(CELL_LEN);
     snprintf(line[0], CELL_LEN, "%s", name);
     line[1] = malloc(CELL_LEN);
@@ -52,7 +52,7 @@ void add_time_value(char* name, size_t threads, double time, double value) {
     line[2] = malloc(CELL_LEN);
     snprintf(line[2], CELL_LEN, "%lf", time);
     line[3] = malloc(CELL_LEN);
-    snprintf(line[2], CELL_LEN, "%lf", value);
+    snprintf(line[3], CELL_LEN, "%lf", value);
 
     csv_add_line(csv, line);
 
