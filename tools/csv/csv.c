@@ -1,5 +1,5 @@
 #include "csv.h"
-#define CELL_LEN 1024
+#define CELL_LEN 2048
 
 csv_file* csv_append(char* name, size_t line_len) {
     csv_file* file = malloc(sizeof(csv_file));
