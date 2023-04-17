@@ -9,22 +9,22 @@ double rand_double(unsigned* seed) {
 }
 
 double monte_carlo(size_t threads, size_t n) {
-    unsigned seed = time(NULL);
     size_t sum = 0;
-#pragma omp parallel num_threads(threads)
-{
-	size_t inside = 0;
-#pragma omp for
-	    for(size_t i = 0; i < n; i++) {
-		double x = rand_double(&seed), y = rand_double(&seed);
+    #pragma omp parallel num_threads(threads)
+    {
+        unsigned seed = time(NULL) + omp_get_thread_num();
+        size_t inside = 0;
+        #pragma omp for
+        for(size_t i = 0; i < n; i++) {
+            double x = rand_double(&seed), y = rand_double(&seed);
 
-		if(x * x + y * y <= 1) {
-		    inside++;
-		}
-	    }
-#pragma omp atomic
-    sum += inside;
-}
+            if(x * x + y * y <= 1) {
+                inside++;
+            }
+        }
+        #pragma omp atomic
+        sum += inside;
+    }
     return (double)(4 * sum) / (double)n;
 }
 
