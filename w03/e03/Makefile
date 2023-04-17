@@ -1,5 +1,5 @@
 CFLAGS = -std=gnu11 -Wall -Wextra -lm -O3 -fopenmp -g
-TARGETS = monte_carlo_local_sum monte_carlo_array monte_carlo_array_8 
+TARGETS = monte_carlo_local_sum monte_carlo_array monte_carlo_array_8 monte_carlo_array_56 
 LIBS = ../../tools/csv/csv.c ../../tools/time/time.c
 
 .PHONY: all
@@ -17,3 +17,6 @@ monte_carlo_array: monte_carlo_array.c $(LIBS)
 
 monte_carlo_array_8: monte_carlo_array.c $(LIBS)
 	$(CC) $(CFLAGS) -DPADDING=8 -o $@ $^
+
+monte_carlo_array_56: monte_carlo_array.c $(LIBS)
+	$(CC) $(CFLAGS) -DPADDING=56 -o $@ $^

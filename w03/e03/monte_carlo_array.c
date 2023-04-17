@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
     printf("Monte Carlo Pi: %lf\n", pi_aprx);
     printf("time: %lf\n", exc_time);
     
-    add_time(VARIANT(PADDING), threads, exc_time);
+    add_time_value(VARIANT(PADDING), threads, exc_time, pi_aprx);
 
     return 0;
 }
