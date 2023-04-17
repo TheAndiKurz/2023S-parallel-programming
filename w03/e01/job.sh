@@ -17,8 +17,19 @@
 # for threads in [1, 2, 4, 8] use monte_carlo with 500000000 samples
 for threads in 1 2 4 8; do
   export OMP_NUM_THREADS=$threads
+  echo "-----------------"
   echo "threads: $threads"
-  ./monte_carlo_atomic $threads 500000000
-  ./monte_carlo_critical $threads 500000000
-  ./monte_carlo_reduction $threads 500000000
+  echo "-----------------"
+  
+  # time the execution of the 3 monte carlo programs
+  /usr/bin/time ./monte_carlo_atomic $threads 500000000
+  /usr/bin/time ./monte_carlo_critical $threads 500000000
+  /usr/bin/time ./monte_carlo_reduction $threads 500000000
+
+  # another 3 times to reduce the variance
+  for i in {1..3}; do
+    ./monte_carlo_atomic $threads 500000000
+    ./monte_carlo_critical $threads 500000000
+    ./monte_carlo_reduction $threads 500000000
+  done
 done

@@ -1,0 +1,7 @@
+- Benchmark your parallel implementations with 1, 2, 4, and 8 threads on LCC2 using n=500,000,000 using OpenMP's time measurement function. What can you observe? How do those results compare to your measurements in Assignment 02?
+critical and atomic sections are way slower than my pthread implementation because it needs to syncronise to much and the overhead is to big. The atomic section is faster than the critical section because it uses hardware support to syncronise.
+reduction is comparable to my pthread implementation because it uses a local variable for each thread and then syncronises the results at the end.
+
+all in all are all slower then the pthread implementation
+
+- The tool /usr/bin/time can be used to get useful information on the properties of a program's execution, e.g. its execution time or the maximum amount of main memory used. Measure the execution time of your OpenMP implementation using /usr/bin/time -v <program_name>. Take a look at the output, specifically "user time" and "elapsed (wall clock) time". How do they differ? Does either of them match the time measurement function of OpenMP?
