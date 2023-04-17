@@ -17,14 +17,17 @@ double rand_double(unsigned* seed) {
 
 double monte_carlo(size_t threads, size_t n) {
     void* sum_array = calloc(threads, (sizeof(size_t) + PADDING));
-    unsigned seed = time(NULL);
 
-#pragma omp parallel for num_threads(threads)
-    for(size_t i = 0; i < n; i++) {
-        double x = rand_double(&seed), y = rand_double(&seed);
-	size_t* val = (size_t*)(sum_array + (sizeof(size_t) + PADDING) * omp_get_thread_num());
-        if(x * x + y * y <= 1) {
-            (*val)++;
+    #pragma omp parallel num_threads(threads)
+    {
+    unsigned seed = time(NULL) + omp_get_thread_num();
+    #pragma omp for
+        for(size_t i = 0; i < n; i++) {
+            double x = rand_double(&seed), y = rand_double(&seed);
+            size_t* val = (size_t*)(sum_array + (sizeof(size_t) + PADDING) * omp_get_thread_num());
+            if(x * x + y * y <= 1) {
+                (*val)++;
+            }
         }
     }
     size_t sum = 0;
