@@ -13,14 +13,13 @@
 # Enforce exclusive node allocation, do not share with other jobs
 #SBATCH --exclusive
 
-# number of samples taken
+# number of samples
 n=100000000
+threads=8
 
-# for threads in [1, 2, 4, 8] use monte_carlo with n samples
-for threads in 1 2 4 8; do
-  export OMP_NUM_THREADS=$threads
-  echo "threads: $threads"
-  ./monte_carlo_local_sum $threads $n
-  ./monte_carlo_array $threads $n
-  ./monte_carlo_array_56 $threads $n
-done
+# use monte_carlo with n samples and threads threads
+export OMP_NUM_THREADS=$threads
+echo "threads: $threads"
+./monte_carlo_local_sum $threads $n
+./monte_carlo_array $threads $n
+./monte_carlo_array_56 $threads $n
