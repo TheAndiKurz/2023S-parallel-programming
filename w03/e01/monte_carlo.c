@@ -18,26 +18,28 @@ double rand_double(unsigned* seed) {
 
 double monte_carlo(size_t threads, size_t n) {
     size_t inside = 0;
-    unsigned seed = time(NULL);
 #ifdef REDUCTION
-#pragma omp parallel for num_threads(threads) reduction(+ : inside)
+#pragma omp parallel num_threads(threads) reduction(+ : inside)
 #else
-#pragma omp parallel for num_threads(threads)
+#pragma omp parallel num_threads(threads)
 #endif
-    for(size_t i = 0; i < n; i++) {
-        double x = rand_double(&seed), y = rand_double(&seed);
+    {
+        unsigned seed = time(NULL) + omp_get_thread_num();
+#pragma omp for
+        for(size_t i = 0; i < n; i++) {
+            double x = rand_double(&seed), y = rand_double(&seed);
 
-        if(x * x + y * y <= 1) {
+            if(x * x + y * y <= 1) {
 #ifdef CRITICAL
 #pragma omp critical
 #endif
 #ifdef ATOMIC
 #pragma omp atomic
 #endif
-            inside++;
+                inside++;
+            }
         }
     }
-
     return (double)(4 * inside) / (double)n;
 }
 

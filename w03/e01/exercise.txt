@@ -1,0 +1,440 @@
+- Benchmark your parallel implementations with 1, 2, 4, and 8 threads on LCC2 using n=500,000,000 using OpenMP's time measurement function. What can you observe? How do those results compare to your measurements in Assignment 02?
+critical and atomic sections are way slower than my pthread implementation because it needs to syncronise to much and the overhead is to big. The atomic section is faster than the critical section because it uses hardware support to syncronise.
+reduction is comparable to my pthread implementation because it uses a local variable for each thread and then syncronises the results at the end.
+
+all in all are all slower then the pthread implementation
+
+- The tool /usr/bin/time can be used to get useful information on the properties of a program's execution, e.g. its execution time or the maximum amount of main memory used. Measure the execution time of your OpenMP implementation using /usr/bin/time -v <program_name>. Take a look at the output, specifically "user time" and "elapsed (wall clock) time". How do they differ? Does either of them match the time measurement function of OpenMP?
+the elapsed (wall clock) time matches the omp time almost completely only some 100th of a second differs sometimes, it is the time from the start of the program to the end of it
+the user time looks on how long it took the processors together, for example if it take 1 second for us but it uses 8 threads the user time would be 8 seconds. This is why the user time with 1 thread matches the elapsed (wall clock) time, but everywhere else it doesn't.
+
+----------
+times.csv
+----------
+name,threads,time
+Atomic,1,21.555400
+Critical,1,29.332871
+Atomic,1,21.556255
+Critical,1,29.321443
+Reduction,1,10.948930
+Atomic,1,21.557801
+Critical,1,29.321421
+Reduction,1,10.949679
+Atomic,1,21.573093
+Critical,1,29.324937
+Reduction,1,10.949176
+Atomic,1,21.557153
+Critical,1,29.349661
+Reduction,1,10.949868
+Atomic,2,36.913569
+Critical,2,113.901980
+Reduction,2,5.482153
+Atomic,2,36.960889
+Critical,2,120.131151
+Reduction,2,5.481484
+Atomic,2,41.642125
+Critical,2,115.113262
+Reduction,2,5.482453
+Atomic,2,41.609087
+Critical,2,100.188236
+Reduction,2,5.495661
+Atomic,4,38.238403
+Critical,4,238.043548
+Reduction,4,2.742208
+Atomic,4,26.087098
+Critical,4,262.282966
+Reduction,4,2.742171
+Atomic,4,26.098584
+Critical,4,254.222960
+Reduction,4,2.742689
+Atomic,4,39.783024
+Atomic,8,43.808870
+Critical,8,542.389826
+Reduction,8,1.751140
+Atomic,8,40.866210
+Critical,8,531.491279
+Reduction,8,1.373088
+Atomic,8,40.909597
+Critical,8,518.870659
+Reduction,8,1.373798
+Atomic,8,43.995342
+
+
+----------
+output.log
+----------
+-----------------
+threads: 1
+-----------------
+Monte Carlo Pi: 3.141567
+time: 21.556255
+        Command being timed: "./monte_carlo_atomic 1 500000000"
+        User time (seconds): 21.55
+        System time (seconds): 0.00
+        Percent of CPU this job got: 99%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:21.56
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 896
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 275
+        Voluntary context switches: 9
+        Involuntary context switches: 11
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 24
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141609
+time: 29.321443
+        Command being timed: "./monte_carlo_critical 1 500000000"
+        User time (seconds): 29.32
+        System time (seconds): 0.00
+        Percent of CPU this job got: 99%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:29.32
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 896
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 275
+        Voluntary context switches: 10
+        Involuntary context switches: 14
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 16
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141586
+time: 10.948930
+        Command being timed: "./monte_carlo_reduction 1 500000000"
+        User time (seconds): 10.94
+        System time (seconds): 0.00
+        Percent of CPU this job got: 99%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:10.95
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 896
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 275
+        Voluntary context switches: 9
+        Involuntary context switches: 7
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 24
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141586
+time: 21.557801
+Monte Carlo Pi: 3.141613
+time: 29.321421
+Monte Carlo Pi: 3.141585
+time: 10.949679
+Monte Carlo Pi: 3.141610
+time: 21.573093
+Monte Carlo Pi: 3.141574
+time: 29.324937
+Monte Carlo Pi: 3.141582
+time: 10.949176
+Monte Carlo Pi: 3.141587
+time: 21.557153
+Monte Carlo Pi: 3.141583
+time: 29.349661
+Monte Carlo Pi: 3.141602
+time: 10.949868
+-----------------
+threads: 2
+-----------------
+Monte Carlo Pi: 3.141591
+time: 36.913569
+        Command being timed: "./monte_carlo_atomic 2 500000000"
+        User time (seconds): 73.79
+        System time (seconds): 0.00
+        Percent of CPU this job got: 199%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:36.91
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 916
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 280
+        Voluntary context switches: 10
+        Involuntary context switches: 26
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 24
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141603
+time: 113.901980
+        Command being timed: "./monte_carlo_critical 2 500000000"
+        User time (seconds): 226.91
+        System time (seconds): 0.00
+        Percent of CPU this job got: 199%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 1:53.90
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 912
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 280
+        Voluntary context switches: 13
+        Involuntary context switches: 73
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 24
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141564
+time: 5.482153
+        Command being timed: "./monte_carlo_reduction 2 500000000"
+        User time (seconds): 10.96
+        System time (seconds): 0.00
+        Percent of CPU this job got: 199%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:05.48
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 908
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 280
+        Voluntary context switches: 9
+        Involuntary context switches: 7
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 16
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141603
+time: 36.960889
+Monte Carlo Pi: 3.141590
+time: 120.131151
+Monte Carlo Pi: 3.141592
+time: 5.481484
+Monte Carlo Pi: 3.141613
+time: 41.642125
+Monte Carlo Pi: 3.141578
+time: 115.113262
+Monte Carlo Pi: 3.141585
+time: 5.482453
+Monte Carlo Pi: 3.141577
+time: 41.609087
+Monte Carlo Pi: 3.141553
+time: 100.188236
+Monte Carlo Pi: 3.141603
+time: 5.495661
+-----------------
+threads: 4
+-----------------
+Monte Carlo Pi: 3.141584
+time: 38.238403
+        Command being timed: "./monte_carlo_atomic 4 500000000"
+        User time (seconds): 152.88
+        System time (seconds): 0.00
+        Percent of CPU this job got: 399%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:38.24
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 928
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 285
+        Voluntary context switches: 15
+        Involuntary context switches: 70
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 24
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141595
+time: 238.043548
+        Command being timed: "./monte_carlo_critical 4 500000000"
+        User time (seconds): 888.13
+        System time (seconds): 0.00
+        Percent of CPU this job got: 373%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 3:58.04
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 928
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 285
+        Voluntary context switches: 17
+        Involuntary context switches: 506
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 16
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141554
+time: 2.742208
+        Command being timed: "./monte_carlo_reduction 4 500000000"
+        User time (seconds): 10.97
+        System time (seconds): 0.00
+        Percent of CPU this job got: 399%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:02.74
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 932
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 285
+        Voluntary context switches: 10
+        Involuntary context switches: 13
+        Swaps: 0
+        File system inputs: 0
+        File system outputs: 16
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141570
+time: 26.087098
+Monte Carlo Pi: 3.141617
+time: 262.282966
+Monte Carlo Pi: 3.141608
+time: 2.742171
+Monte Carlo Pi: 3.141586
+time: 26.098584
+Monte Carlo Pi: 3.141594
+time: 254.222960
+Monte Carlo Pi: 3.141578
+time: 2.742689
+Monte Carlo Pi: 3.141601
+time: 39.783024
+slurmstepd: error: *** JOB 82617 ON n008 CANCELLED AT 2023-04-17T16:18:30 DUE TO TIME LIMIT ***
+-----------------
+threads: 8
+-----------------
+Monte Carlo Pi: 3.141572
+time: 43.808870
+        Command being timed: "./monte_carlo_atomic 8 500000000"
+        User time (seconds): 326.58
+        System time (seconds): 0.00
+        Percent of CPU this job got: 745%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:43.82
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 964
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 295
+        Voluntary context switches: 29
+        Involuntary context switches: 2466
+        Swaps: 0
+        File system inputs: 56
+        File system outputs: 24
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141608
+time: 542.389826
+        Command being timed: "./monte_carlo_critical 8 500000000"
+        User time (seconds): 4129.50
+        System time (seconds): 148.51
+        Percent of CPU this job got: 788%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 9:02.39
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 968
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 301
+        Voluntary context switches: 779
+        Involuntary context switches: 38160
+        Swaps: 0
+        File system inputs: 56
+        File system outputs: 24
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141563
+time: 1.751140
+        Command being timed: "./monte_carlo_reduction 8 500000000"
+        User time (seconds): 11.02
+        System time (seconds): 0.00
+        Percent of CPU this job got: 628%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.75
+        Average shared text size (kbytes): 0
+        Average unshared data size (kbytes): 0
+        Average stack size (kbytes): 0
+        Average total size (kbytes): 0
+        Maximum resident set size (kbytes): 968
+        Average resident set size (kbytes): 0
+        Major (requiring I/O) page faults: 0
+        Minor (reclaiming a frame) page faults: 294
+        Voluntary context switches: 18
+        Involuntary context switches: 553
+        Swaps: 0
+        File system inputs: 56
+        File system outputs: 16
+        Socket messages sent: 0
+        Socket messages received: 0
+        Signals delivered: 0
+        Page size (bytes): 4096
+        Exit status: 0
+Monte Carlo Pi: 3.141588
+time: 40.866210
+Monte Carlo Pi: 3.141581
+time: 531.491279
+Monte Carlo Pi: 3.141604
+time: 1.373088
+Monte Carlo Pi: 3.141607
+time: 40.909597
+Monte Carlo Pi: 3.141551
+time: 518.870659
+Monte Carlo Pi: 3.141608
+time: 1.373798
