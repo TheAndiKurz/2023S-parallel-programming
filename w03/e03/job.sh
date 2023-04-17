@@ -18,7 +18,9 @@
 for threads in 1 2 4 8; do
   export OMP_NUM_THREADS=$threads
   echo "threads: $threads"
-  ./monte_carlo_local_sum $threads 500000000
+  #./monte_carlo_local_sum $threads 500000000
   ./monte_carlo_array $threads 500000000
-  ./monte_carlo_array_8 $threads 500000000
+  #./monte_carlo_array_8 $threads 500000000
 done
+
+#500000000

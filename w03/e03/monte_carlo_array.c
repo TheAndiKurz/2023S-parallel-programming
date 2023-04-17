@@ -8,25 +8,30 @@
 #define PADDING 0
 #endif /* !PADDING */
 
+#define STR(x) #x
+#define VARIANT(pad) "array(padding:" STR(pad) ")"
+
 double rand_double(unsigned* seed) {
     return (double)rand_r(seed) / (double)RAND_MAX;
 }
 
 double monte_carlo(size_t threads, size_t n) {
-    void* sum_array = malloc((sizeof(size_t) + PADDING) * threads;
+    void* sum_array = calloc(threads, (sizeof(size_t) + PADDING));
     unsigned seed = time(NULL);
+
 #pragma omp parallel for num_threads(threads)
     for(size_t i = 0; i < n; i++) {
         double x = rand_double(&seed), y = rand_double(&seed);
-
+	size_t* val = (size_t*)(sum_array + (sizeof(size_t) + PADDING) * omp_get_thread_num());
         if(x * x + y * y <= 1) {
-            (*(size_t*)(sum_array + (sizeof(size_t) + PADDING) * omp_get_thread_num()))++;
+            (*val)++;
         }
     }
     size_t sum = 0;
     for (size_t i = 0; i < threads; i++){
         sum += *(size_t*)(sum_array + (sizeof(size_t) + PADDING) * i);
     }
+    free(sum_array);
 
     return (double)(4 * sum) / (double)n;
 }
@@ -50,8 +55,8 @@ int main(int argc, char* argv[]) {
 
     printf("Monte Carlo Pi: %lf\n", pi_aprx);
     printf("time: %lf\n", exc_time);
-
-    add_time(VARIANT, threads, exc_time);
+    
+    add_time(VARIANT(PADDING), threads, exc_time);
 
     return 0;
 }

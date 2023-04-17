@@ -11,17 +11,20 @@ double rand_double(unsigned* seed) {
 double monte_carlo(size_t threads, size_t n) {
     unsigned seed = time(NULL);
     size_t sum = 0;
-#pragma omp parallel for num_threads(threads) private(inside)
-    size_t inside = 0;
-    for(size_t i = 0; i < n; i++) {
-        double x = rand_double(&seed), y = rand_double(&seed);
+#pragma omp parallel num_threads(threads)
+{
+	size_t inside = 0;
+#pragma omp for
+	    for(size_t i = 0; i < n; i++) {
+		double x = rand_double(&seed), y = rand_double(&seed);
 
-        if(x * x + y * y <= 1) {
-            inside++;
-        }
-    }
+		if(x * x + y * y <= 1) {
+		    inside++;
+		}
+	    }
 #pragma omp atomic
     sum += inside;
+}
     return (double)(4 * sum) / (double)n;
 }
 
@@ -45,7 +48,7 @@ int main(int argc, char* argv[]) {
     printf("Monte Carlo Pi: %lf\n", pi_aprx);
     printf("time: %lf\n", exc_time);
 
-    add_time(VARIANT, threads, exc_time);
+    add_time("local_sum", threads, exc_time);
 
     return 0;
 }
