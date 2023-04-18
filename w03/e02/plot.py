@@ -11,15 +11,15 @@ df = pd.read_csv('times.csv').sort_values(by=['name'], ascending=True)
 # Group the data by 'threads' and 'name' columns and calculate the mean and standard deviation
 grouped = df.groupby(['threads', 'name'])['time'].agg(['mean', 'std']).unstack().reset_index()
 
-# use the Safe color palette by Paul Tol
-colors = ['#009E73', '#0072B2', '#D55E00', '#CC79A7', '#F0E442', '#56B4E9', '#bcbcbc']
+# Dutch Field color palette
+colors = ['#e60049', '#0bb4ff', '#50e991', '#e6d800', '#9b19f5', '#ffa300', '#dc0ab4', '#b3d4ff', '#00bfa0']
 cmap = ListedColormap(colors)
 
 # Create a grouped bar chart with error bars showing the standard deviation
-ax = grouped['mean'].plot(kind='bar', yerr=grouped['std'], rot=0, cmap=cmap)
+ax = grouped['mean'].plot(kind='bar', yerr=grouped['std'], capsize=2, ecolor='black', rot=0, cmap=cmap)
 
 # Set the x-axis tick labels to the 'threads' column values
-ax.set_xticklabels(grouped['threads'])
+#ax.set_xticklabels(grouped['threads'])
 
 # Set the title and axis labels
 ax.set_title('Execution Time by Number of Threads and Name')
