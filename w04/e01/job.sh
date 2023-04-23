@@ -19,7 +19,6 @@ n=250000000
 export OMP_NUM_THREADS=4
 
 for place in "cores(1)" "threads(4)" "sockets(1)"; do
-    # export TIME_CSV_NAME=times-$place.csv
     export OMP_PLACES=$place
     echo "-----------------"
     echo "place: $place"

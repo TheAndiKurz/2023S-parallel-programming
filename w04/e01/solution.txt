@@ -1,0 +1,16 @@
+- Explain the affinity settings that you chose.
+close = have the threads run on places that are close to each other
+master = have the threads run on the same place as the master thread
+spread = have the threads run on places that are as far away from each other as possible
+
+places would be the sockets/cores/threads that the computer has its a hirarchy with sockets -> cores -> threads
+you can specify the places the program should use with the OMP_PLACES environment variable
+
+
+- Benchmark your program with these affinity settings. What can you observe?
+If I use the places=cores(1) so i tell OMP to only use one cpu core the program takes around 2 seconds to complete and the affinity does not matter much
+
+with places=sockets(1) the program takes around 3.25 seconds to complete and the affinity does not either
+
+with places=threads(4) the Benchmark is the same as with sockets(1), except with affinity master with which it takes around 0.5 seconds.
+I guess that happens, because this program would run faster as a single thread application, because we use atomic variable to increment the counter and that is a bottleneck. With the affinity master restricted with places(4) omp will try to put the threads on the same core as the master thread and that is the same thread, this means it will basicly run as a single thread application and will be faster.
