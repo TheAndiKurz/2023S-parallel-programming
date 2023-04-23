@@ -5,11 +5,10 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import cmasher as cmr
 
-import argparse
+from argparse import ArgumentParser
 
-parser = argparse.ArgumentParser()
+parser = ArgumentParser()
 
-# parse 2 arguments from the command line a output file and a input file
 parser.add_argument(
     "-i",
     "--input",
