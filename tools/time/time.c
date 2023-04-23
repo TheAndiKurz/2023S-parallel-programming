@@ -2,7 +2,7 @@
 
 #include "../csv/csv.h"
 
-csv_file* get_file() {
+csv_file* get_file(size_t header_len, char** header) {
     char* csv_name = getenv("TIME_CSV_NAME");
     if(csv_name == NULL) {
         csv_name = "times.csv";
@@ -10,16 +10,15 @@ csv_file* get_file() {
 
     FILE* f = fopen(csv_name, "r");
     if(f == NULL) {
-        char* header[3] = { "name", "threads", "time" };
-        return csv_create(csv_name, 3, header);
+        return csv_create(csv_name, header_len, header);
     }
 
     fclose(f);
-    return csv_append(csv_name, 3);
+    return csv_append(csv_name, header_len);
 }
 
 void add_time(char* name, size_t threads, double time) {
-    csv_file* csv = get_file();
+    csv_file* csv = get_file(3, (char*[]){ "name", "threads", "time" });
 
     char* line[3];
     line[0] = malloc(TIME_CELL_LEN);
@@ -39,7 +38,7 @@ void add_time(char* name, size_t threads, double time) {
 }
 
 void add_time_value(char* name, size_t threads, double time, double value) {
-    csv_file* csv = get_file();
+    csv_file* csv = get_file(4, (char*[]){ "name", "threads", "time", "value" });
 
     char* line[4];
     line[0] = malloc(TIME_CELL_LEN);
