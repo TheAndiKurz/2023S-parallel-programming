@@ -62,7 +62,7 @@ colors = [
     "#b3d4ff",
     "#00bfa0",
 ]
-cmap = ListedColormap(colors, N=grouped["mean"].shape[1])
+cmap = ListedColormap(colors, None, N=grouped["mean"].shape[1])
 
 # Create a grouped bar chart with error bars showing the standard deviation
 ax = grouped["mean"].plot(
