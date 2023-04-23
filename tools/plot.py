@@ -26,11 +26,20 @@ parser.add_argument(
     default="performance.png",
     required=False,
 )
+parser.add_argument(
+    "-t",
+    "--title",
+    dest="title",
+    help="Title of the plot",
+    default="Execution Time by Number of Threads and Name",
+    required=False,
+)
 
 # set the csv_name to the variable when argument is set
 args = parser.parse_args()
 csv_name = args.csv_name
 png_name = args.png_name
+title = args.title
 
 
 # Load the data from the CSV file
@@ -64,7 +73,7 @@ ax = grouped["mean"].plot(
 # ax.set_xticklabels(grouped['threads'])
 
 # Set the title and axis labels
-ax.set_title("Execution Time by Number of Threads and Name")
+ax.set_title(title)
 ax.set_xlabel("Threads")
 ax.set_ylabel("Time (seconds)")
 
