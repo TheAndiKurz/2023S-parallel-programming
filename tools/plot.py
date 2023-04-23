@@ -62,15 +62,20 @@ colors = [
     "#b3d4ff",
     "#00bfa0",
 ]
-cmap = ListedColormap(colors)
+cmap = ListedColormap(colors, N=grouped["mean"].shape[1])
 
 # Create a grouped bar chart with error bars showing the standard deviation
 ax = grouped["mean"].plot(
-    kind="bar", yerr=grouped["std"], capsize=2, ecolor="black", rot=0, cmap=cmap
+    kind="bar",
+    yerr=grouped["std"],
+    capsize=2,
+    ecolor="black",
+    rot=0,
+    cmap=cmap,
 )
 
 # Set the x-axis tick labels to the 'threads' column values
-# ax.set_xticklabels(grouped['threads'])
+ax.set_xticklabels(grouped["threads"])
 
 # Set the title and axis labels
 ax.set_title(title)
