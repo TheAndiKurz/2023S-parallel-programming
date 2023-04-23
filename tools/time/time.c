@@ -1,7 +1,6 @@
 #include "time.h"
 
 #include "../csv/csv.h"
-#define CELL_LEN 64
 
 void add_time(char* name, size_t threads, double time) {
     csv_file* csv;
@@ -9,19 +8,25 @@ void add_time(char* name, size_t threads, double time) {
     FILE* f = fopen("times.csv", "r");
     if(f == NULL) {
         char* header[3] = { "name", "threads", "time" };
-        csv = csv_create("times.csv", 3, header);
+        char* csv_name = getenv("TIME_CSV_NAME");
+
+        if(csv_name != NULL) {
+            csv = csv_create(csv_name, 3, header);
+        } else {
+            csv = csv_create("times.csv", 3, header);
+        }
     } else {
         fclose(f);
         csv = csv_append("times.csv", 3);
     }
 
     char* line[3];
-    line[0] = malloc(CELL_LEN);
-    snprintf(line[0], CELL_LEN, "%s", name);
-    line[1] = malloc(CELL_LEN);
-    snprintf(line[1], CELL_LEN, "%zu", threads);
-    line[2] = malloc(CELL_LEN);
-    snprintf(line[2], CELL_LEN, "%lf", time);
+    line[0] = malloc(TIME_CELL_LEN);
+    snprintf(line[0], TIME_CELL_LEN, "%s", name);
+    line[1] = malloc(TIME_CELL_LEN);
+    snprintf(line[1], TIME_CELL_LEN, "%zu", threads);
+    line[2] = malloc(TIME_CELL_LEN);
+    snprintf(line[2], TIME_CELL_LEN, "%lf", time);
 
     csv_add_line(csv, line);
 
@@ -45,14 +50,14 @@ void add_time_value(char* name, size_t threads, double time, double value) {
     }
 
     char* line[4];
-    line[0] = malloc(CELL_LEN);
-    snprintf(line[0], CELL_LEN, "%s", name);
-    line[1] = malloc(CELL_LEN);
-    snprintf(line[1], CELL_LEN, "%zu", threads);
-    line[2] = malloc(CELL_LEN);
-    snprintf(line[2], CELL_LEN, "%lf", time);
-    line[3] = malloc(CELL_LEN);
-    snprintf(line[3], CELL_LEN, "%lf", value);
+    line[0] = malloc(TIME_CELL_LEN);
+    snprintf(line[0], TIME_CELL_LEN, "%s", name);
+    line[1] = malloc(TIME_CELL_LEN);
+    snprintf(line[1], TIME_CELL_LEN, "%zu", threads);
+    line[2] = malloc(TIME_CELL_LEN);
+    snprintf(line[2], TIME_CELL_LEN, "%lf", time);
+    line[3] = malloc(TIME_CELL_LEN);
+    snprintf(line[3], TIME_CELL_LEN, "%lf", value);
 
     csv_add_line(csv, line);
 
