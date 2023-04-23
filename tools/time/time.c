@@ -2,23 +2,24 @@
 
 #include "../csv/csv.h"
 
-void add_time(char* name, size_t threads, double time) {
-    csv_file* csv;
+csv_file* get_file() {
+    char* csv_name = getenv("TIME_CSV_NAME");
+    if(csv_name == NULL) {
+        csv_name = "times.csv";
+    }
 
-    FILE* f = fopen("times.csv", "r");
+    FILE* f = fopen(csv_name, "r");
     if(f == NULL) {
         char* header[3] = { "name", "threads", "time" };
-        char* csv_name = getenv("TIME_CSV_NAME");
-
-        if(csv_name != NULL) {
-            csv = csv_create(csv_name, 3, header);
-        } else {
-            csv = csv_create("times.csv", 3, header);
-        }
-    } else {
-        fclose(f);
-        csv = csv_append("times.csv", 3);
+        return csv_create(csv_name, 3, header);
     }
+
+    fclose(f);
+    return csv_append(csv_name, 3);
+}
+
+void add_time(char* name, size_t threads, double time) {
+    csv_file* csv = get_file();
 
     char* line[3];
     line[0] = malloc(TIME_CELL_LEN);
@@ -38,16 +39,7 @@ void add_time(char* name, size_t threads, double time) {
 }
 
 void add_time_value(char* name, size_t threads, double time, double value) {
-    csv_file* csv;
-
-    FILE* f = fopen("times.csv", "r");
-    if(f == NULL) {
-        char* header[4] = { "name", "threads", "time", "value" };
-        csv = csv_create("times.csv", 4, header);
-    } else {
-        fclose(f);
-        csv = csv_append("times.csv", 4);
-    }
+    csv_file* csv = get_file();
 
     char* line[4];
     line[0] = malloc(TIME_CELL_LEN);
