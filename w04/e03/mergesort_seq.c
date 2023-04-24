@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <omp.h>
 
 #include "../../tools/time/time.h"
 
@@ -20,7 +21,8 @@ void merge(int arr[], int l, int m, int r) {
     int n2 = r - m;
 
     /* create temp arrays */
-    int L[n1], R[n2];
+    int *L = malloc(sizeof(int)*n1); 
+    int *R = malloc(sizeof(int)*n2);
 
     /* Copy data to temp arrays L[] and R[] */
     for(i = 0; i < n1; i++)

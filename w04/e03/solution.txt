@@ -1,0 +1,3 @@
+The task construct is used, to assign a task to a thread of the pool. In this case, the function calls can be executed independently. The taskwait, then acts similar to a barrier. The programm only continues, when all tasks before it, are finished. 
+
+The 'mergesort_seq.c' is as written on the the lecture slides, but takes for ever to execute. Thus I have used the version where only the merge_sort is parallelized, but not the merging. ('mergesort_halfseq.c')

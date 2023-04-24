@@ -13,16 +13,16 @@
 # Enforce exclusive node allocation, do not share with other jobs
 #SBATCH --exclusive
 
-for size in 500 1000 10000 100000 10000000 100000000; do 
+for size in 100 1000 10000 100000 10000000; do 
   echo "sequential | size: $size"
   for n in {1..4}; do 
     ./mergesort_seq $size
   done
-  for threads in 1 2 4; do
+  for threads in 1 2 4 8; do
     export OMP_NUM_THREADS=$threads
     echo "threads: $threads | size: $size"
     for n in {1..4}; do 
-      ./mergesort_par $size
+      ./mergesort_halfpar $size
     done
   done
 done
