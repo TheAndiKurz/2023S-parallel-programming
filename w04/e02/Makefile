@@ -22,4 +22,4 @@ flush.o: flush.c
 	$(CC) $(CFLAGS) $(LFLAGS) -c $<
 
 clean:
-	@rm -f *.o $(BINS) ex2_-* ex2_optimized_*
+	@rm -f *.o $(BINS) flush_-*
