@@ -1,3 +1,3 @@
 The flush pragma lets other threads know that there were changes to the variable & flushes it to / from main memory so that all threads use the same value.
 For flush.c we want to flush whenever a shared value was changed or we try to access a shared value.
-see code for comments
+see code of flush.c for comments

@@ -8,11 +8,11 @@ LIBS = ../../tools/csv/csv.c ../../tools/time/time.c
 
 BINS = flush
 
-OPTIMIZATIONS =  -O3 -O0
+OPTIMIZATIONS =  -O3
 
 all: $(BINS)
 
-flush: flush.o $(LIBS)
+flush: flush.o
 	# Compile the target with different optimization levels
 	for opt in $(OPTIMIZATIONS); do \
 		$(CC) $(CFLAGS) $$opt $^ -o $@_$$opt; \
