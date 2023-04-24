@@ -1,6 +1,8 @@
-CFLAGS = -std=gnu11 -Wall -Wextra -lm -fopenmp -O3 -g 
+CFLAGS = -std=gnu11 -Wall -Wextra -lm -O3 -g -fopenmp
+DEBUG = -fsanitize=address
 TARGETS = mergesort_seq mergesort_par
 LIBS = ../../tools/csv/csv.c ../../tools/time/time.c
+CC = /usr/local/bin/gcc-12
 
 .PHONY: all
 all: $(TARGETS)

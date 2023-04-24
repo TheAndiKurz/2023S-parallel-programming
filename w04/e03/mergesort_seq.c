@@ -3,10 +3,13 @@
 /* C program for Merge Sort */
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "../../tools/time/time.h"
 
 #define N 100000
+
+#define NO_TIME
 
 // Merges two subarrays of arr[].
 // First subarray is arr[l..m]
@@ -77,21 +80,27 @@ void assert_sorted(int arr[], size_t n){
     }
 }
 
-int main(void) {
-    int *arr = (int *)malloc(sizeof(int)*N);
-    size_t arr_size = N;
+int main(int argc, char *argv[]) {
+    if (argc != 2){
+        printf("invalid arguments! usage: %s <number_elements>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+    size_t arr_size = (size_t)strtol(argv[1], NULL, 10);
+    int *arr = (int *)malloc(sizeof(int)*arr_size);
 
     double startTime = omp_get_wtime();
-  
+    
     mergeSort(arr, 0, arr_size - 1);
-
+  
     double endTime = omp_get_wtime();
     double exc_time = endTime - startTime;    
-    printf("Merge sort seqential: %lf seconds\n", exc_time);
     
     assert_sorted(arr, arr_size);
+    char name[256];
+    sprintf(name, "parallel length=%lu", arr_size);
 
-    add_time("mergesort seqential", 1, exc_time);
+    add_time(name, 1, exc_time);
 
     return 0;
 }
+

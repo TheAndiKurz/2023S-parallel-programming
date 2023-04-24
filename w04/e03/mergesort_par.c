@@ -3,54 +3,52 @@
 /* C program for Merge Sort */
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
+#include <omp.h>
 
 #include "../../tools/time/time.h"
-
-#define N 100000
-#ifndef THREADS
-#define THREADS 1
-#endif /* !THREADS */
-
 
 int binary_search(int v, int arr[], int n){
     int m = n/2;
     if (arr[m] == v){
       return m;
     } else if (v < arr[m]) {
-        return binary_search(v, arr, m)
+        return binary_search(v, arr, m);
     } else {
-        return binary_search(v, arr+m, n-m)
+        return binary_search(v, arr+m, n-m);
     }
 }
 
-void merge(int C[], int A[], int B[], int na, int nb) {
+void merge(int target[], int a[], int b[], int na, int nb) {
     if (na < nb) {
-        merge(C, B, A, nb, na);
-    } else if {
+        merge(target, b, a, nb, na);
+    } else if (na == 0) {
         return;
     } else {
         int ma = na/2;
-        int mb = binary_search(A[ma], B, nb);
-        C[ma+mb] = A[ma]
+        int mb = binary_search(a[ma], b, nb);
+        target[ma+mb] = a[ma];
         #pragma omp task 
-            merge(C,A,B,ma,mb);
+            merge(target, a, b, ma, mb);
         #pragma omp task
-            merge(C+ma+mb+1,A+ma+1,B+mb,na-ma-1,nb-mb);
+            merge(target+ma+mb+1, a+ma+1, b+mb, na-ma-1, nb-mb);
         #pragma omp taskwait
     }
 }
 
-void merge_sort(int B[], int A[], int n) {
+void merge_sort(int target[], int source[], int n) {
     if (n == 1) {
-        B[0] = A[0]
+        target[0] = source[0];
     } else {
-        int C[n] = {0}; 
+        int* temp = malloc(sizeof(int)*n);
+        int m = n/2;
         #pragma omp task
-            mergeSort(C, A, n/2);
+            merge_sort(temp, source, m);
         #pragma omp task
-            mergeSort(C+n/2, A+n/2, n-n/2);
+            merge_sort(temp+m, source+m, n-m);
         #pragma omp taskwait
-            merge(B, C, C+n/2, n/2, n-n/2);
+            merge(target, temp, temp+m, m, n-m);
+        free(temp);
     }
 }
 
@@ -61,21 +59,30 @@ void assert_sorted(int arr[], size_t n){
 
 }
 
-int main(void) {
-    int *arr = (int *)malloc(sizeof(int)*N);
-    size_t arr_size = N;
+int main(int argc, char *argv[]) {
+    if (argc != 2){
+        printf("invalid arguments! usage: %s <number_elements>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+    size_t arr_size = (size_t)strtol(argv[1], NULL, 10);
+    int *arr = (int *)malloc(sizeof(int)*arr_size);
+    int *target = (int *)malloc(sizeof(int)*arr_size);
 
     double startTime = omp_get_wtime();
-  
-    mergeSort(arr, 0, arr_size - 1);
+
+    merge_sort(target, arr, arr_size);
 
     double endTime = omp_get_wtime();
-    double exc_time = endTime - startTime;    
-    printf("Merge sort seqential: %lf seconds\n", exc_time);
-    
+    double exc_time = endTime - startTime;
+    int threads = omp_get_max_threads();
+
     assert_sorted(arr, arr_size);
+    free(arr);
+    free(target);
 
-    add_time("mergesort seqential", 1, exc_time);
+    char name[256];
+    sprintf(name, "parallel length=%lu", arr_size);
 
-    return 0;
+    add_time(name, threads, exc_time);
+    return EXIT_SUCCESS;
 }
