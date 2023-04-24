@@ -15,6 +15,6 @@
 
 
 # for threads in [1, 2, 4, 8] use monte_carlo with 500000000 samples
-for iteration in {1 .. 10000}; do
-  ./flush
+for iteration in {1 .. 1000}; do
+  salloc --exclusive --tasks-per-node=1 --cpus-per-task=1 srun --pty flash
 done
