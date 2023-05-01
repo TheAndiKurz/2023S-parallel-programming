@@ -1,0 +1,26 @@
+- Implemetation:
+  The basic recusive algorithm is implemented in delannoy_seq.c (VERSION=4). 
+  I also implemented another version, using a dynamic paradigma approach. As this version reaches the stack limit relativly fast, theres a version using malloc as well. 
+  Finally there are two further optimizations of the dynamic algorithm, in the first version, rows, which won't get used anymore aren't stored, in the second optimization only the upper diagonal is computed, as it's mirrored.
+
+  For parallization, I only parallized the recusive algorithm (I didn't see a good way to parallize the dynamic algorithms, without loosing performance).
+  The first parallization is implemented in delannoy_par_nrecursive.c. Here for every recursive function call a new task is defined. This isn't very effective though, as there is very little computational work per function. 
+  This leads to the second parallization. Here, every thime the function is called, a check is performend if a limit of tasks is reached. If so, no more tasks are created, and the remainding function is computed sequentially.
+
+- Benchmarks:
+  (performance tasks)
+  The first thing I meassured, is how many tasks shoud be created in the second parallel version. As the number of threads increases, the number of tasks should also increase until a certain threshold. This threshold is highly dependent on the grid-size (n). 
+  This outcome can be intuitively explained: if more tasks are created, the work can be split better between the treads. At some point the overhead of creating tasks is so high it overtakes the advantage of splitting work. 
+
+  (performance n)
+  Then I meassured the time the recursive implementations take for a increasing number of n.
+  The naive parallization performs by far the worst. With decreasing performance for more threads.
+  The good parallization (I picked 81 tasks as limit, since that seems like giving a pretty good performance for a wide range of n) is very close to the sequential one, for small n. 
+  The bigger n gets, the parallel version gets better.
+
+  (performance big n)
+  The dymaic algorithms outperform the recursive ones by far. As the best recursive time for n=15 is arround 30s, the dynamic algorithms can do n=10000 with ease.
+
+-Bottleneck:
+  One potential bottleneck could be, that before the sum of the three sub functions is calculated a shared variable for each value is created. There may be a omp construct using reduce to avoid this, but I haven't found it.
+
