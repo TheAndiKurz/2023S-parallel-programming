@@ -34,14 +34,15 @@ uint64_t delannoy_helper(int m, int n, int d, int n_tasks){
     }
 }
 uint64_t delannoy(int m, int n, int n_tasks){
-    return delannoy_helper(m,n,1,n_tasks);
+    return delannoy_helper(m,n,3,n_tasks);
 }
 
 void print_usage(){
     printf("Invalid arguments. usage:\n");
     printf("  ./delannoy_number_par_recursive <grid size> [-t <number of tasks>] [-w <name>]\n");
     printf("  -t: specify the maximum number of tasks to spawn\n");
-    printf("  -w: write the parameter specified by <name> to the csv file\n      name can be one of 's' (size of grid, default), 't' (number of tasks) or 'n' (number of threads)\n");
+    printf("  -w: specify the attribute written to the csv file: 't' for tasks, 'n' for threads\n");
+
     return;
 }
 
@@ -114,11 +115,11 @@ int main(int argc, char *argv[])
     char msg[512];
     
     if (output_parameter == 't') {
-        sprintf(msg, "parallel recursive - n=%d/%d threads", n, omp_get_max_threads());
+        sprintf(msg, "parallel recursive - n=%d / %d threads", n, omp_get_max_threads());
     } else if (output_parameter == 'n') {
-        sprintf(msg, "parallel recursive - n=%d/%d tasks", n, n_tasks);
+        sprintf(msg, "parallel recursive - n=%d / %d tasks", n, n_tasks);
     } else {
-        sprintf(msg, "parallel recursive - %d threads/%d tasks", omp_get_max_threads(), n_tasks);
+        sprintf(msg, "parallel recursive - %d threads / %d tasks", omp_get_max_threads(), n_tasks);
     }
     add_time(msg, output_parameter_value, exc_time);
 

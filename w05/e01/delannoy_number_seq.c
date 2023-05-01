@@ -159,35 +159,36 @@ uint64_t delannoy(int m, int n){
 }
 #endif /* if VERSION */
 
+void print_usage(){
+    printf("Invalid arguments. usage:\n ./delannoy_number_par_nrecursive <grid size> [-w]\n");
+    printf("  -w: write the number of threads (here 1) to the csv file (by default the grid size is written).");
+    return;
+}
+
 int main(int argc, char *argv[])
 {
     //check if the number of arguments is correct
-    if (argc != 2 || (argc > 2 && argv[1][0] == '-'))
+    if (argc < 2 || argc > 3)
     {
-        printf("Invalid arguments. usage:\n ./delannoy_number_seq <grid size>\n or\n ./delannoy_number_seq -s <m> <n>\n");
+        print_usage();
         return 1;
     }
-    int m = 0;
     int n = 0;
-    //if argument '-s' is given 
-    if (argv[1][0] == '-' && argv[1][1] == 's'){
-        m = atoi(argv[2]);
-        n = atoi(argv[3]);
-        if ((m <= 0 && argv[2][0] != '0') || (n <= 0 && argv[2][0] != '0'))
-        {
-            printf("Invalid arguments. usage:\n ./delannoy_number_seq <grid size>\n or\n ./delannoy_number_seq -s <m> <n>\n");
+    //convert the argument to an integer
+    n = atoi(argv[1]);
+    //check if the argument is a positive integer
+    if (n <= 0 && argv[1][0] != '0')
+    {
+        print_usage();
+        return 1;
+    }
+    bool write_threads = false;
+    if (argc == 3) {
+        if (argv[argc-1][0] != '-' || argv[argc-1][1] != 'w') {
+            print_usage();
             return 1;
         }
-    } else {
-        //convert the argument to an integer
-        m = atoi(argv[1]);
-        n = m;
-        //check if the argument is a positive integer
-        if (n <= 0 && argv[1][0] != '0')
-        {
-            printf("Invalid arguments. usage:\n ./delannoy_number_seq <grid size>\n or\n ./delannoy_number_seq -s <m> <n>\n");
-            return 1;
-        }
+        write_threads = true;
     }
 
     double startTime = omp_get_wtime();
@@ -198,9 +199,13 @@ int main(int argc, char *argv[])
     double exc_time = endTime - startTime;
 
     char msg[512];
-    sprintf(msg, "seqential - %s", VERSION_TEXT);
-
-    add_time(msg, n, exc_time);
+    if (write_threads) {
+        sprintf(msg, "seqential %s - n=%d", VERSION_TEXT, n);
+        add_time(msg, 1, exc_time);
+    } else {
+        sprintf(msg, "seqential %s", VERSION_TEXT);
+        add_time(msg, n, exc_time);
+    }
 
     //print out the Delannoy number for the given grid size
     printf("The Delannoy number for a %dx%d grid is %llu, in %lfs.\n", n, n, del, exc_time);

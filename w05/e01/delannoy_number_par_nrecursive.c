@@ -24,6 +24,7 @@ uint64_t delannoy(int m, int n){
 }
 void print_usage(){
     printf("Invalid arguments. usage:\n ./delannoy_number_par_nrecursive <grid size> [-w]\n");
+    printf("  -w: write the number of threads to the csv file (by default the grid size is written).");
     return;
 }
 

@@ -16,10 +16,10 @@
 
 for i in {1..6}; do
   # Run with different number tasks for 1 to 8 threads
-  for t in {1..30}; do
+  for t in {1..15}; do
     # parallel recursive for optimal number of tasks
-    for n in 1 2 4; do
-        OMP_NUM_THREADS=${n} ./delannoy_number_par_recursive 12 -t $((${t}**2)) -w t
+    for n in 1 2 4 8; do
+        OMP_NUM_THREADS=${n} ./delannoy_number_par_recursive 12 -t $((3**${t})) -w t
     done
   done
 done
