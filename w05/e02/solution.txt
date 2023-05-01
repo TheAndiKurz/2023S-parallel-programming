@@ -1,0 +1,10 @@
+Explanation omp collapse(n):
+For independant rectangular nested loops it may be the case that different iterations take a different ammount of time,
+or the outer loop is less than the number of threads active which can lead to some threads being idle.
+collapse will split this nested for into iterations for every index combination and distribute those iterations over the number of threads.
+this will lead to a more even load distribution and might improve performance.
+
+The n specifies the nesting depth to which collapsing should be applied so one can choose to only collapse the first 2 loops of a tripple nested loop.
+
+Triangular loops (e.g a logarithmic loop where the inner loop iterates outerloop/2 times per outer iteration) are more
+difficult to collapse and the collapse pragma is not suitable for this.
