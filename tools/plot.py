@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import cmasher as cmr
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, BooleanOptionalAction
 
 parser = ArgumentParser()
 
@@ -33,20 +33,30 @@ parser.add_argument(
     default="Execution Time by Number of Threads and Name",
     required=False,
 )
+parser.add_argument(
+    "-l",
+    "--log",
+    dest="log",
+    help="Logarithmic scale",
+    action=BooleanOptionalAction,
+    default=False,
+    required=False,
+)
 
 # set the csv_name to the variable when argument is set
 args = parser.parse_args()
 csv_name = args.csv_name
 png_name = args.png_name
 title = args.title
-
+log_scale = args.log
 
 # Load the data from the CSV file
 df = pd.read_csv(csv_name).sort_values(by=["name"], ascending=True)
 
 # Group the data by 'threads' and 'name' columns and calculate the mean and standard deviation
 grouped = (
-    df.groupby(["threads", "name"])["time"].agg(["mean", "std"]).unstack().reset_index()
+    df.groupby(["threads", "name"])["time"].agg(
+        ["mean", "std"]).unstack().reset_index()
 )
 
 # Dutch Field color palette
@@ -71,6 +81,7 @@ ax = grouped["mean"].plot(
     ecolor="black",
     rot=0,
     cmap=cmap,
+    logy=log_scale,
 )
 
 # Set the x-axis tick labels to the 'threads' column values
@@ -82,6 +93,7 @@ ax.set_xlabel("Threads")
 ax.set_ylabel("Time (seconds)")
 
 # Add legend
-ax.legend(title="Name", bbox_to_anchor=(1.02, 1), loc="upper left", borderaxespad=0)
+ax.legend(title="Name", bbox_to_anchor=(1.02, 1),
+          loc="upper left", borderaxespad=0)
 
 plt.savefig(png_name, bbox_inches="tight")
