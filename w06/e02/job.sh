@@ -20,7 +20,7 @@ for n in 8 10 12 14 15; do
     echo "-----------------"
 
 
-    for _ in {1..5}; do
+    for _ in {1..1}; do
         echo "-----------------"
         echo "seqential"
         echo "-----------------"

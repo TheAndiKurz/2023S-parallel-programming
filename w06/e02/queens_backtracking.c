@@ -4,17 +4,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define PARALLEL_ROWS 1
+
 struct position {
     size_t x;
     size_t y;
 };
 typedef struct position position;
 
+void clone_queens(position* src, position* dest, size_t n) {
+    for(size_t i = 0; i < n; i++) {
+        dest[i] = src[i];
+    }
+}
+
 bool is_position_attacked_by_queen(position p, position q) {
     return p.x == q.x ||             // same row
            p.y == q.y ||             // same column
-           p.x - p.y == q.x - q.y || // same diagonal down
-           p.x + p.y == q.x + q.y;   // same diagonal up
+           p.x + p.y == q.x + q.y || // same diagonal positive slope
+           p.x - p.y == q.x - q.y;   // same diagonal negative slope
 }
 
 bool is_position_attacked_by_queens(position p, position* queens, size_t n_queens) {
@@ -33,6 +41,17 @@ void print_queens(position* queens, size_t n_queens) {
     printf("\n");
 }
 
+size_t solve_queen_problem_rec(size_t n, size_t row, position* queens);
+
+size_t solve_queen_problem_step(size_t n, size_t row, position* queens, position p) {
+    if(is_position_attacked_by_queens(p, queens, row)) {
+        return 0;
+    }
+
+    queens[row] = p;
+    return solve_queen_problem_rec(n, row + 1, queens);
+}
+
 size_t solve_queen_problem_rec(size_t n, size_t row, position* queens) {
 
     if(row == n) {
@@ -45,11 +64,7 @@ size_t solve_queen_problem_rec(size_t n, size_t row, position* queens) {
 
     size_t solutions = 0;
     for(size_t x = 0; x < n; x++) {
-        position p = (position){ x, row };
-        if(!is_position_attacked_by_queens(p, queens, row)) {
-            queens[row] = p;
-            solutions += solve_queen_problem_rec(n, row + 1, queens);
-        }
+        solutions += solve_queen_problem_step(n, row, queens, (position){ x, row });
     }
 
     return solutions;
@@ -58,7 +73,7 @@ size_t solve_queen_problem_rec(size_t n, size_t row, position* queens) {
 int solve_queen_problem(size_t n) {
     size_t solutions = 0;
 #ifdef PARALLEL
-#pragma omp parallel for reduction(+ : solutions) if(n > 10)
+#pragma omp parallel for reduction(+ : solutions)
 #endif
     for(size_t x = 0; x < n; x++) {
         position p = (position){ x, 0 };
