@@ -24,7 +24,7 @@ for n in 8 10 12 14 15; do
         echo "-----------------"
         echo "seqential"
         echo "-----------------"
-        ./queens_rec_seq $n
+        ./queens_backtracking_seq $n
 
         for threads in 1 2 4 8; do
             export OMP_NUM_THREADS=$threads
@@ -32,7 +32,7 @@ for n in 8 10 12 14 15; do
             echo "threads: $threads"
             echo "-----------------"
             
-            ./queens_rec_par $n
+            ./queens_backtracking_par $n
         done
 
     done

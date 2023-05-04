@@ -10,13 +10,6 @@ struct position {
 };
 typedef struct position position;
 
-// this is only needed for parallel version
-void clone_queens(position* src, position* dst, size_t nq) {
-    for(size_t i = 0; i < nq; i++) {
-        dst[i] = src[i];
-    }
-}
-
 bool is_position_attacked_by_queen(position p, position q) {
     return p.x == q.x ||             // same row
            p.y == q.y ||             // same column
@@ -54,27 +47,10 @@ size_t solve_queen_problem_rec(size_t n, size_t row, position* queens) {
     for(size_t x = 0; x < n; x++) {
         position p = (position){ x, row };
         if(!is_position_attacked_by_queens(p, queens, row)) {
-
-#ifdef PARALLEL_
-
-#pragma omp task shared(solutions)
-            {
-                position* queens_clone = malloc(n * sizeof(position));
-                clone_queens(queens, queens_clone, row);
-                queens_clone[row] = p;
-                solutions += solve_queen_problem_rec(n, row + 1, queens_clone);
-                free(queens_clone);
-            }
-#else
             queens[row] = p;
             solutions += solve_queen_problem_rec(n, row + 1, queens);
-#endif
         }
     }
-
-#ifdef PARALLEL_
-#pragma omp taskwait
-#endif
 
     return solutions;
 }
