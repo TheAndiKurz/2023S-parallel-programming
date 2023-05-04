@@ -1,0 +1,4 @@
+- Has your effort payed off?
+
+Yes, because it was really easy to parallelize and it made a significat increase for n > 10.
+For any n <= 10, it doesn't matter because it is BLAZINGLY fast anyway.
