@@ -1,6 +1,6 @@
 # Variables
 CC = gcc
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -std=gnu11 -Wall -Wextra -lm -O3 -fopenmp -g
 SRC = $(wildcard *.c)
 EXEC = $(SRC:%.c=%)
 
