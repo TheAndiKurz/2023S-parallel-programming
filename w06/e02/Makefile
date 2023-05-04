@@ -8,8 +8,8 @@ EXEC = $(SRC:%.c=%)
 all: $(EXEC)
 
 %: %.c
-	$(CC) $(CFLAGS) -c $< -o $@_seq
-	$(CC) $(CFLAGS) -c $< -o $@_par -DPARALLEL
+	$(CC) $(CFLAGS) $< -o $@_seq
+	$(CC) $(CFLAGS) $< -o $@_par -DPARALLEL
 
 
 clean:
