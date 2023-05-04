@@ -13,21 +13,21 @@ typedef struct position position;
 bool is_position_attacked_by_queen(position p, position q) {
     return p.x == q.x ||             // same row
            p.y == q.y ||             // same column
-           p.x - p.y == q.x - q.y || // diagonal down
-           p.x + p.y == q.x + q.y;   // diagonal up
+           p.x - p.y == q.x - q.y || // same diagonal down
+           p.x + p.y == q.x + q.y;   // same diagonal up
 }
 
-bool is_position_attacked_by_queens(position p, position* q, size_t nq) {
-    for(size_t i = 0; i < nq; i++) {
-        if(is_position_attacked_by_queen(p, q[i])) {
+bool is_position_attacked_by_queens(position p, position* queens, size_t n_queens) {
+    for(size_t i = 0; i < n_queens; i++) {
+        if(is_position_attacked_by_queen(p, queens[i])) {
             return true;
         }
     }
     return false;
 }
 
-void print_queens(position* queens, size_t nq) {
-    for(size_t i = 0; i < nq; i++) {
+void print_queens(position* queens, size_t n_queens) {
+    for(size_t i = 0; i < n_queens; i++) {
         printf("(%lu, %lu) ", queens[i].x, queens[i].y);
     }
     printf("\n");
@@ -58,7 +58,7 @@ size_t solve_queen_problem_rec(size_t n, size_t row, position* queens) {
 int solve_queen_problem(size_t n) {
     size_t solutions = 0;
 #ifdef PARALLEL
-#pragma omp parallel for reduction(+ : solutions)
+#pragma omp parallel for reduction(+ : solutions) if(n > 10)
 #endif
     for(size_t x = 0; x < n; x++) {
         position p = (position){ x, 0 };
