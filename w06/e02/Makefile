@@ -1,15 +1,16 @@
 # Variables
 CC = gcc
 CFLAGS = -std=gnu11 -Wall -Wextra -lm -O3 -fopenmp -g
+LIBS = $(wildcard ../../tools/**/*.c)
 SRC = $(wildcard *.c)
 EXEC = $(SRC:%.c=%)
 
 # Rules
 all: $(EXEC)
 
-%: %.c
-	$(CC) $(CFLAGS) $< -o $@_seq
-	$(CC) $(CFLAGS) $< -o $@_par -DPARALLEL
+%: %.c $(LIBS)
+	$(CC) $(CFLAGS) $^ -o $@_seq
+	$(CC) $(CFLAGS) $^ -o $@_par -DPARALLEL
 
 
 clean:

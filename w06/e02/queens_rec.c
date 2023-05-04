@@ -1,3 +1,5 @@
+#include "../../tools/time/time.h"
+#include <omp.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +9,13 @@ struct position {
     size_t y;
 };
 typedef struct position position;
+
+// this is only needed for parallel version
+void clone_queens(position* src, position* dst, size_t nq) {
+    for(size_t i = 0; i < nq; i++) {
+        dst[i] = src[i];
+    }
+}
 
 bool is_position_attacked_by_queen(position p, position q) {
     return p.x == q.x ||             // same row
@@ -31,36 +40,59 @@ void print_queens(position* queens, size_t nq) {
     printf("\n");
 }
 
-int solve_queen_problem_rec(size_t n, size_t row, position* queens, size_t nq) {
-    if(row > n) return 0;
+size_t solve_queen_problem_rec(size_t n, size_t row, position* queens) {
 
-    if(nq == n) {
+    if(row == n) {
         return 1;
     }
 
-    int solutions = 0;
+    if(row > n) {
+        return 0;
+    }
+
+    size_t solutions = 0;
     for(size_t x = 0; x < n; x++) {
         position p = (position){ x, row };
-        if(!is_position_attacked_by_queens(p, queens, nq)) {
-            queens[nq] = p;
-            solutions += solve_queen_problem_rec(n, row + 1, queens, nq + 1);
+        if(!is_position_attacked_by_queens(p, queens, row)) {
+
+#ifdef PARALLEL_
+
+#pragma omp task shared(solutions)
+            {
+                position* queens_clone = malloc(n * sizeof(position));
+                clone_queens(queens, queens_clone, row);
+                queens_clone[row] = p;
+                solutions += solve_queen_problem_rec(n, row + 1, queens_clone);
+                free(queens_clone);
+            }
+#else
+            queens[row] = p;
+            solutions += solve_queen_problem_rec(n, row + 1, queens);
+#endif
         }
     }
+
+#ifdef PARALLEL_
+#pragma omp taskwait
+#endif
 
     return solutions;
 }
 
 int solve_queen_problem(size_t n) {
-    position* queens = malloc(n * sizeof(position));
-    for(size_t i = 0; i < n; i++) {
-        queens[i] = (position){ 0, 0 };
+    size_t solutions = 0;
+#ifdef PARALLEL
+#pragma omp parallel for reduction(+ : solutions)
+#endif
+    for(size_t x = 0; x < n; x++) {
+        position p = (position){ x, 0 };
+        position* queens = malloc(n * sizeof(position));
+        queens[0] = p;
+
+        solutions += solve_queen_problem_rec(n, 1, queens);
+
+        free(queens);
     }
-
-    size_t nq = 0;
-
-    int solutions = solve_queen_problem_rec(n, 0, queens, nq);
-
-    free(queens);
 
     return solutions;
 }
@@ -73,9 +105,24 @@ int main(int argc, char* argv[]) {
 
     size_t n = (size_t)atoi(argv[1]);
 
-    int solutions = solve_queen_problem(n);
+    double startTime = omp_get_wtime();
 
-    printf("Solutions: %d\n", solutions);
+    size_t solutions = solve_queen_problem(n);
+
+    double endTime = omp_get_wtime();
+    double exc_time = endTime - startTime;
+    printf("time: %lf\n", exc_time);
+    printf("Solution: %lu\n", solutions);
+
+    char name[TIME_CELL_LEN];
+    snprintf(name, TIME_CELL_LEN, "number-of-queens=%03lu", n);
+
+#ifdef PARALLEL
+    size_t threads = omp_get_max_threads();
+#else
+    size_t threads = 0;
+#endif
+    add_time_value(name, threads, exc_time, (double)solutions);
 
     return 0;
 }
