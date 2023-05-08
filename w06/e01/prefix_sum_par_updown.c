@@ -7,11 +7,7 @@
 
 //#define DEBUG
 
-#ifdef BIG_N
-    typedef int64_t arr_t;
-#else 
-    typedef int32_t arr_t;
-#endif /* ifdef BIG_N */
+typedef int32_t arr_t;
 
 //debuging helper for printing the array
 void print_array(int32_t *arr, size_t n) {
@@ -23,7 +19,8 @@ void print_array(int32_t *arr, size_t n) {
 
 void prefix_sum(arr_t *a, arr_t n);
 
-// I use the algorithm outlined on https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda
+// I use the algorithm outlined on 
+// https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda
 int main(int argc, char *argv[]) {
     arr_t n = 0;
     if (argc == 2) {
@@ -46,18 +43,10 @@ int main(int argc, char *argv[]) {
 
     double end_time = omp_get_wtime();
     double time = end_time - start_time;
-#ifdef BIG_N
-    printf("Exclusive prefix sum for n=%lld: %lld, in %fs\n", n, a[n - 1], time);
-#else
     printf("Exclusive prefix sum for n=%d: %d, in %fs\n", n, a[n - 1], time);
-#endif
-#ifdef DEBUG
-    printf("parallel for n=%d/ n_threads = %d %s\n",   \
-           n, omp_get_max_threads(), a[n - 1] != n-1 ? "(wrong)" : "");
-#endif /* ifdef DEBUG */
 
     char msg[64];
-    sprintf(msg, "parallel using for (%d threads)", omp_get_max_threads());
+    sprintf(msg, "parallel (%d threads)", omp_get_max_threads());
     add_time(msg, n, time);
     free(a);
 
@@ -68,18 +57,15 @@ void prefix_sum(arr_t* a, arr_t n) {
     // Upsweep phase
     for (arr_t d = 0; d < (arr_t) log2(n); d++) {
         int step = 1 << (d + 1);
-//        print_array(a,min_n);
         #pragma omp parallel for
         for (arr_t k = 0; k < n; k += step) {
             a[k + step - 1] += a[k + (step >> 1) - 1];
         }
     }
 //    print_array(a,n);
-    // Downsweep phase 
     a[n - 1] = 0;
     for (arr_t d = (arr_t)log2(n) - 1; d >= 0; d--) {
         arr_t step = 1 << (d + 1);
-//        print_array(a,min_n);
         #pragma omp parallel for
         for (arr_t k = 0; k < n; k += step) {
             arr_t t = a[k + (step >> 1) - 1];

@@ -5,13 +5,7 @@
 
 #include "../../tools/time/time.h"
 
-//#define DEBUG
-
-#ifdef BIG_N
-    typedef int64_t arr_t;
-#else 
-    typedef int32_t arr_t;
-#endif /* ifdef BIG_N */
+typedef int32_t arr_t;
 
 //debuging helper for printing the array
 void print_array(int32_t *arr, size_t n) {
@@ -51,18 +45,10 @@ int main(int argc, char *argv[]) {
     double end_time = omp_get_wtime();
     double time = end_time - start_time;
 
-#ifdef BIG_N
-    printf("Exclusive prefix sum for n=%lld: %lld, in %fs\n", n, a[n - 1], time);
-#else 
     printf("Exclusive prefix sum for n=%d: %d, in %fs\n", n, a[n - 1], time);
-#endif /* ifdef BIG_N */
-#ifdef DEBUG
-    printf("parallel tasks n-%d/ n_threads = %d %s\n",   \
-           n, omp_get_max_threads(), a[n - 1] != n-1 ? "(wrong)" : "");
-#endif /* ifdef DEBUG */
   
     char msg[64];
-    sprintf(msg, "parallel using tasks (%d threads)", omp_get_max_threads());
+    sprintf(msg, "parallel using for (%d threads)", omp_get_max_threads());
     add_time(msg, n, time);
     free(a);
 
@@ -72,31 +58,20 @@ int main(int argc, char *argv[]) {
 void prefix_sum(arr_t* a, arr_t n) {
     // Upsweep phase
     arr_t block_size = n/omp_get_max_threads();
-    #pragma omp parallel 
-    {
-        #pragma omp single
-        {
-            for (int i = 1; i < omp_get_max_threads(); i++){
-                #pragma omp task
-                upsweep(a+i*block_size, 0, block_size);
-            }
-            // let the master thread to one computation too
-            upsweep(a, 0, block_size);
-            // doing the last steps of upsweep 
-            #pragma omp taskwait
-            upsweep_par(a, log2(block_size), n);
 
-            // doing the first steps of downsweep
-            a[n-1] = 0;
-            downsweep_par(a, log2(block_size), n);
-            for (int i = 1; i < omp_get_max_threads(); i++){
-                #pragma omp task
-                downsweep(a+i*block_size, 0, block_size);
-            }
-            // let the master thread to one computation too
-            downsweep(a, 0, block_size);
-            #pragma omp taskwait
-        }
+    #pragma omp parallel for
+    for (int i = 0; i < omp_get_max_threads(); i++){
+        upsweep_par(a+i*block_size, 0, block_size);
+    }
+    // doing the last steps of upsweep 
+    upsweep_par(a, log2(block_size), n);
+
+    // doing the first steps of downsweep
+    a[n-1] = 0;
+    downsweep_par(a, log2(block_size), n);
+    #pragma omp parallel for
+    for (int i = 0; i < omp_get_max_threads(); i++){
+        downsweep_par(a+i*block_size, 0, block_size);
     }
     return;
 }

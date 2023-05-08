@@ -4,11 +4,7 @@
 
 #include "../../tools/time/time.h"
 
-#ifdef BIG_N
-    typedef int64_t arr_t;
-#else 
-    typedef int32_t arr_t;
-#endif /* ifdef BIG_N */
+typedef int32_t arr_t;
 
 int main(int argc, char *argv[]) {
     arr_t n = 0;
@@ -36,15 +32,7 @@ int main(int argc, char *argv[]) {
     double end_time = omp_get_wtime();
     double time = end_time - start_time;
 
-#ifdef BIG_N
-    printf("Exclusive prefix sum for n=%lld: %lld, in %fs\n", n, b[n - 1], time);
-#else
     printf("Exclusive prefix sum for n=%d: %d, in %fs\n", n, b[n - 1], time);
-#endif /* ifdef BIG_N */
-#ifdef DEBUG
-    printf("sequential n=%d %s\n",   \
-           n, a[n - 1] != n-1 ? "(wrong)" : "");
-#endif /* ifdef DEBUG */
 
     free(a);
     free(b);
