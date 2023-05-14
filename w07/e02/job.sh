@@ -13,12 +13,13 @@
 # Enforce exclusive node allocation, do not share with other jobs
 #SBATCH --exclusive
 
-for i in {1..5}; do
-  for n in {4..13}; do
-    m=$((2**${n}))
-    echo "Vector size: ${m}"
-    ./reference ${m}
-    ./vectorized ${m} 
+for i in {1..10}; do
+  for n in 1024 2048 4096; do
+    echo "Vector size: ${n}"
+    ./reference ${n}
+    ./omp_vectorized ${n} 
+    ./reference_double ${n}
+    ./omp_vectorized_double ${n} 
   done
 done
 

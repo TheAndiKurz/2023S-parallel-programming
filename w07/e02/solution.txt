@@ -1,46 +1,86 @@
-The program takes n (vector length) as input paramenter, and executes the given code. 
-The vector are initialized as follows:
-a = 1, b = 2, c = 3
-The expected value of a[i] is 600001 (2*3*100000 + 1). This gets checked at the end of the program by assertions over each element of the vector. 
+For this exercise we used the omp pragma to vectorize the multiplication loop of our program.
+We can also see the different optimizations being reflected by the perf counters.
 
-Vectorization is enabled by using '-ftree_vecortize' (default with -O3).
-To get innformation about what was beeing vectorized '-fopt-info-vec' can be used. The output is:
-```
-auto_vec.c:38:5: optimized: loop vectorized using 16 byte vectors (init)
-auto_vec.c:38:5: optimized:  loop versioned for vectorization because of possible aliasing (init)
-auto_vec.c:48:9: optimized: loop vectorized using 16 byte vectors
-auto_vec.c:48:9: optimized:  loop versioned for vectorization because of possible aliasing
-```
+r01: Counts the number of operations on packed single-precision floating-point data.
+r02: Counts the number of operations on scalar single-precision floating-point data.
+r04: Counts the number of operations on packed double-precision floating-point data.
+r08: Counts the number of operations on scalar double-precision floating-point data.
+r10: Counts the number of operations on packed integer or floating-point data.
+r1f: Counts the total number of retired SIMD instructions, regardless of their type.
 
-The vectorized version still gives correct results. 
-The performance is improved but not as much as expected. (interestingly, the speedup on my local system is much higher than on the cluster)
-On the lcc2, there is a speedup of roughly 140%. It increases as the vector length gets bigger, and decreases again for big n. 
-On my local system (OSX / intel) this behaivior is similar, but the speedup is between 240% and 300%, depending on n.
+For float non vectorized instructions are counted in r01 or r02 where r01 counts the packed (vectorized)
+instructions. so for the reference program we expect all instructions to be in r02. And for the vectorized
+version we can observe a large number of instructions shifting to r01 which will be our vector operations.
 
-
-The interesting event of perf stat is rC710:u, which is the number of vector instructions retired.
-The number of vector instructions retired in the vectorized version is a quarter of the reference version, 
-which is expected, as 4 floats fit into one vector instruction.
-
-The output of perf stat for SIMD_INST_RETIRED.VECTOR is: 
-```
  Performance counter stats for './reference 2048':
 
-        4100013423      rC710:u                                                     
+                 0      r01C7:u                                                       (33.31%)
+     8,189,301,867      r02C7:u                                                       (33.32%)
+                 0      r04C7:u                                                       (33.36%)
+               138      r08C7:u                                                       (33.36%)
+             6,389      r10C7:u                                                       (33.34%)
+     8,192,411,110      r1fC7:u                                                       (33.32%)
 
-       2.484792987 seconds time elapsed
+       2.503311708 seconds time elapsed
 
-       2.479327000 seconds user
-       0.002999000 seconds sys
+       2.495542000 seconds user
+       0.003996000 seconds sys
 
 
+ Performance counter stats for './omp_vectorized 2048':
 
- Performance counter stats for './vectorized 2048':
+     1,023,879,831      r01C7:u                                                       (33.24%)
+                 0      r02C7:u                                                       (33.29%)
+                 0      r04C7:u                                                       (33.31%)
+     2,050,270,116      r08C7:u                                                       (33.36%)
+     2,049,165,901      r10C7:u                                                       (33.45%)
+     3,072,910,728      r1fC7:u                                                       (33.35%)
 
-        1025012305      rC710:u                                                     
+       1.754991543 seconds time elapsed
 
-       1.729645755 seconds time elapsed
+       1.741671000 seconds user
+       0.001014000 seconds sys
 
-       1.725025000 seconds user
-       0.002998000 seconds sys
-```
+___________________________________________________________________________________________________
+Here for double we observe the same shift but this time between r08 and r04 which are the registers for 
+packed and scalar double precision instructions. But here it seems like the vectorized version is actually
+slower than the reference version without vectorization.
+
+ Performance counter stats for './reference_double 2048':
+
+                 0      r01C7:u                                                       (33.32%)
+                 0      r02C7:u                                                       (33.36%)
+                 0      r04C7:u                                                       (33.35%)
+     8,190,614,969      r08C7:u                                                       (33.32%)
+               354      r10C7:u                                                       (33.33%)
+     8,196,521,170      r1fC7:u                                                       (33.32%)
+
+       3.905533785 seconds time elapsed
+
+       3.898947000 seconds user
+       0.001999000 seconds sys
+
+
+ Performance counter stats for './omp_vectorized_double 2048':
+
+                 0      r01C7:u                                                       (33.32%)
+                 0      r02C7:u                                                       (33.32%)
+     2,046,569,443      r04C7:u                                                       (33.32%)
+     4,096,056,414      r08C7:u                                                       (33.35%)
+     4,096,404,167      r10C7:u                                                       (33.36%)
+     6,146,050,373      r1fC7:u                                                       (33.33%)
+
+       4.829391348 seconds time elapsed
+
+       4.817645000 seconds user
+       0.004999000 seconds sys
+___________________________________________________________________________________________________
+Execution times: (size = 4096)
+reference  reference_double  vectorized  vectorized_double
+ 5.596479          8.119513    4.677949           9.759702
+
+Speedup:
+ reference -> vecotorized: 20% faster
+ reference_double -> vectorized_double: 20% slower ?!
+
+For double I reran the job multiple times always with the same result.
