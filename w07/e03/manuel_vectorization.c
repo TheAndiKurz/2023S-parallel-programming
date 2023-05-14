@@ -5,7 +5,7 @@
 
 #include "../../tools/time/time.h"
 
-#define VECTOR_SIZE 2048
+#define REPETITIONS 1000000
 
 #ifdef VECTORICE
 #define NAME "vectorized"
@@ -35,11 +35,11 @@ void calculate_sum_and_mult(float* a, float* b, float* c, size_t size) {
 }
 #endif
 
-void benchmark(size_t repetitions) {
-    float a[VECTOR_SIZE], b[VECTOR_SIZE], c[VECTOR_SIZE];
+void benchmark(const size_t vec_size) {
+    float a[vec_size], b[vec_size], c[vec_size];
 
-    for(size_t i = 0; i < repetitions; i++) {
-        calculate_sum_and_mult(a, b, c, VECTOR_SIZE);
+    for(size_t i = 0; i < REPETITIONS; i++) {
+        calculate_sum_and_mult(a, b, c, vec_size);
     }
 }
 
@@ -49,18 +49,18 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-    size_t repetitions = atoi(argv[1]);
+    size_t vec_size = atoi(argv[1]);
 
     double start_time = omp_get_wtime();
 
-    benchmark(repetitions);
+    benchmark(vec_size);
 
     double end_time = omp_get_wtime();
     double exc_time = end_time - start_time;
 
     printf("time: %lf\n", exc_time);
 
-    add_time(NAME, repetitions, exc_time);
+    add_time(NAME, vec_size, exc_time);
 
     return EXIT_SUCCESS;
 }
