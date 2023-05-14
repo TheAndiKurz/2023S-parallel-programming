@@ -13,11 +13,11 @@
 # Enforce exclusive node allocation, do not share with other jobs
 #SBATCH --exclusive
 
-for i in {1..5}; do
+for i in {1..2}; do
   for n in {4..13}; do
     m=$((2**${n}))
     echo "Vector size: ${m}"
     ./manuel_vectorization_vec ${m}
-    ./manuel_vectorization_no_vec ${m} 
+    ./manuel_vectorization_not_vec ${m} 
   done
 done
