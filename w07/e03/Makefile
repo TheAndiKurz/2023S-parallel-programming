@@ -10,10 +10,10 @@ all: $(EXEC)
 
 %: %.c $(LIBS)
 	$(CC) $(CFLAGS) $^ -o $@_vec -DVECTORICE
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@_not_vec
 
 
 clean:
-	rm -f $(EXEC)
+	rm -f $(EXEC)_*
 
 .PHONY: all

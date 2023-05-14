@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 
     printf("time: %lf\n", exc_time);
 
-    add_time(NAME, 0, exc_time);
+    add_time(NAME, repetitions, exc_time);
 
     return EXIT_SUCCESS;
 }
