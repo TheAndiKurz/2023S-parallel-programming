@@ -15,8 +15,10 @@
 #define RESULT 6000001.0
 #define ASSERT_EPSILON 0.001
 
-#ifndef NAME
-#define NAME "auto vectorize"
+#ifdef VECTORIZE
+#define NAME "VECTORIZE"
+#else
+#define NAME "NOT VECTORIZED"
 #endif
 
 // Initialize vectors with constant values
