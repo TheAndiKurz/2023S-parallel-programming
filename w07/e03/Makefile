@@ -9,7 +9,7 @@ EXEC = $(SRC:%.c=%)
 all: $(EXEC)
 
 %: %.c $(LIBS)
-	$(CC) $(CFLAGS) $^ -o $@_vec -DVECTORICE
+	$(CC) $(CFLAGS) $^ -o $@_vec -DVECTORIZE
 	$(CC) $(CFLAGS) $^ -o $@_not_vec
 
 
