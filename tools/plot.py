@@ -43,12 +43,23 @@ parser.add_argument(
     required=False,
 )
 
+parser.add_argument(
+    "-x",
+    "--x-axis",
+    dest="x_axis",
+    help="give the x axis a name",
+    default="Threads",
+    required=False
+)
+
 # set the csv_name to the variable when argument is set
 args = parser.parse_args()
 csv_name = args.csv_name
 png_name = args.png_name
 title = args.title
 log_scale = args.log
+
+x_axis_name = args.x_axis
 
 # Load the data from the CSV file
 df = pd.read_csv(csv_name).sort_values(by=["name"], ascending=True)
@@ -89,7 +100,7 @@ ax.set_xticklabels(grouped["threads"])
 
 # Set the title and axis labels
 ax.set_title(title)
-ax.set_xlabel("Threads")
+ax.set_xlabel(x_axis_name)
 ax.set_ylabel("Time (seconds)")
 
 # Add legend
