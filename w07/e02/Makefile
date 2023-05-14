@@ -1,25 +1,22 @@
-.PHONY = all clean
+CFLAGS = -std=gnu11 -Wall -Wextra -lm -O1 -fopenmp -fopt-info-vec
+DEBUG = -g
+TARGETS = reference omp_vectorized
+LIBS = ../../tools/csv/csv.c ../../tools/time/time.c
 CC = gcc
 
-CFLAGS = -std=c11 -Wall -Werror -Wextra -Wpedantic -fopenmp
-LFLAGS = -fopenmp
+.PHONY: all
+all: $(TARGETS)
 
-LIBS = ../../tools/csv/csv.c ../../tools/time/time.c
-
-BINS = task2
-
-OPTIMIZATIONS =  -O1
-
-all: $(BINS)
-
-task2: task2.o $(LIBS)
-	# Compile the target with different optimization levels
-	for opt in $(OPTIMIZATIONS); do \
-		$(CC) $(CFLAGS) $$opt $^ -o $@_$$opt; \
-	done
-
-task2.o: task2.c
-	$(CC) $(CFLAGS) $(LFLAGS) -c $<
-
+.PHONY: clean
 clean:
-	@rm -f *.o $(BINS) flush_-*
+	$(RM) $(TARGETS) 
+
+reference: omp_vec.c $(LIBS)
+	$(CC) $(CFLAGS) -DNAME='"reference"' -o $@ $^
+
+omp_vectorized: omp_vec.c $(LIBS)
+	$(CC) $(CFLAGS) -DVECTORIZE -DNAME='"vectorized"' -o $@ $^
+
+%: %.c $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $^
+

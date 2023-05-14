@@ -13,12 +13,14 @@
 # Enforce exclusive node allocation, do not share with other jobs
 #SBATCH --exclusive
 
-
-# for threads in [1, 2, 4, 8] use monte_carlo with 500000000 samples
-export VARIANT="task2_simd_-O1"
-for vector_size in 1024 2048 4096 ; do
-  echo "size: $vector_size"
-   for i in {1..10}; do
-    ./task2_-O1 $vector_size
+for i in {1..5}; do
+  for n in {4..13}; do
+    m=$((2**${n}))
+    echo "Vector size: ${m}"
+    ./reference ${m}
+    ./vectorized ${m} 
   done
 done
+
+mv ./times.csv ./times_n_local.csv 
+
