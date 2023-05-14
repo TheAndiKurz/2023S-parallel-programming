@@ -2,7 +2,7 @@
 CC = gcc
 
 CFLAGS = -std=c11 -Wall -Werror -Wextra -Wpedantic -fopenmp
-LFLAGS =
+LFLAGS = -fopenmp
 
 LIBS = ../../tools/csv/csv.c ../../tools/time/time.c
 

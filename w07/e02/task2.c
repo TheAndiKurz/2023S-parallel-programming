@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
 
     time_t start_time = omp_get_wtime();
     for(int run = 0; run < repetitions; ++run) {
+#pragma omp simd 
         for(int i = 0; i < vector_size; ++i) {
             a[i] += b[i] * c[i];
         }

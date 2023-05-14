@@ -15,7 +15,7 @@
 
 
 # for threads in [1, 2, 4, 8] use monte_carlo with 500000000 samples
-export VARIANT="task2_sequential_-O1"
+export VARIANT="task2_simd_-O1"
 for vector_size in 1024 2048 4096 ; do
   echo "size: $vector_size"
    for i in {1..10}; do
