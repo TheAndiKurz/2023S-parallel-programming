@@ -36,9 +36,9 @@ void compute(float* a, float* b, float* c, int size) {
 #ifdef VECTORIZE
         for(int i = 0; i < size; i += 4) {
             // Load 4 floats from memory into SSE registers
-            __m128 a_data = _mm_load_ps(&a[i]);
-            __m128 b_data = _mm_load_ps(&b[i]);
-            __m128 c_data = _mm_load_ps(&c[i]);
+            __m128 a_data = _mm_load_ps(a + i);
+            __m128 b_data = _mm_load_ps(b + i);
+            __m128 c_data = _mm_load_ps(c + i);
 
             // Perform element-wise multiplication
             __m128 result = _mm_mul_ps(b_data, c_data);
@@ -47,7 +47,7 @@ void compute(float* a, float* b, float* c, int size) {
             a_data = _mm_add_ps(a_data, result);
 
             // Store the result back to memory
-            _mm_store_ps(&a[i], a_data);
+            _mm_store_ps(a + i, a_data);
         }
 #else
         for(int i = 0; i < size; ++i) {

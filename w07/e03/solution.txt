@@ -1,0 +1,19 @@
+Because I couldn't install a newer compiler version of gcc, and was still on gcc4.4 stuck I guess that is the reason why it was always way slower then the version in exc1.
+
+But I noticed that in the lower vector size the vectorization with intristics has a better speedup, but on the larger vectors it has almost no speedup. I think that is because the intristics version can only calculate with 4 floats at a time but the auto vec is much faster, because it actually can do more then just 4 at a time. But the overhead of setting it up is less therefore it has better speedup on low vectorsizes but on larger vectors the speedup is just worth the setup.
+
+
+The interesting event of perf stat is rC710:u, which is the number of vector instructions retired.
+The number of vector instructions retired in the vectorized version is a quarter of the reference version, 
+which is expected, as 4 floats fit into one vector instruction.
+
+The output of perf stat for SIMD_INST_RETIRED.VECTOR is: 
+```
+Performance counter stats for './manuel_vectorization_vec 2048':
+
+    1,024,009,174      rC710:u
+
+        4.130230475 seconds time elapsed
+
+        4.126387000 seconds user
+        0.001999000 seconds sys
