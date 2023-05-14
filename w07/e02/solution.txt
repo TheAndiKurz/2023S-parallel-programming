@@ -1,9 +1,0 @@
-The flush pragma lets other threads know that there were changes to the variable & flushes it to / from main memory so that all threads use the same value.
-For flush.c we want to flush whenever a shared value was changed or we try to access a shared value.
-see code of flush.c for comments
-
-in the interactive seshion: running run.sh multiple times did not show any signs of a race condition with me trying it 4 times (4000)
-but this does not mean the code was correct as race conditions are not bound to occur in every execution
-but this does not mean the code was correct as race conditions are not bound to occur in every execution.
-
-

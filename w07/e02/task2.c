@@ -3,6 +3,7 @@
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define CHECK_STRTOL(errno, endptr, strptr, message) \
     do { \
@@ -26,8 +27,6 @@ int main(int argc, char* argv[]) {
     int vector_size = strtol(argv[1], &endptr, 10); // converting number string to int
     CHECK_STRTOL(errno, endptr, argv[1], "strtol number");
 
-    char* data_type = argv[2];
-
     /* DATA INITIALISATION */
 
     float* a = malloc(vector_size * sizeof(float));
@@ -40,7 +39,7 @@ int main(int argc, char* argv[]) {
     }
 
     /* ALGORITHM */
-    u_int repetitions = 1e6;
+    int repetitions = 1e6;
 
     time_t start_time = omp_get_wtime();
     for(int run = 0; run < repetitions; ++run) {
@@ -53,7 +52,7 @@ int main(int argc, char* argv[]) {
     long threads = omp_get_max_threads();
     char* variant = getenv("VARIANT");
     variant = variant == NULL ? "NO VARIANT" : variant;
-    add_time(variant, threads, exec_time);
+    add_time_value(variant, threads, exec_time, vector_size);
 
     printf("Time: %ld s\n", end_time - start_time);
     printf("Result: %f\n", a[vector_size - 1]);

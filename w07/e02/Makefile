@@ -6,19 +6,19 @@ LFLAGS =
 
 LIBS = ../../tools/csv/csv.c ../../tools/time/time.c
 
-BINS = flush
+BINS = task2
 
-OPTIMIZATIONS =  -O3
+OPTIMIZATIONS =  -O1
 
 all: $(BINS)
 
-flush: flush.o
+task2: task2.o $(LIBS)
 	# Compile the target with different optimization levels
 	for opt in $(OPTIMIZATIONS); do \
 		$(CC) $(CFLAGS) $$opt $^ -o $@_$$opt; \
 	done
 
-flush.o: flush.c
+task2.o: task2.c
 	$(CC) $(CFLAGS) $(LFLAGS) -c $<
 
 clean:
