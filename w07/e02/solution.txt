@@ -75,19 +75,20 @@ slower than the reference version without vectorization.
        4.817645000 seconds user
        0.004999000 seconds sys
 ___________________________________________________________________________________________________
-Execution times: (size = 4096)
+Execution times: (size = 2048)
 reference  reference_double  vectorized  vectorized_double
  5.596479          8.119513    4.677949           9.759702
 
 Speedup:
  reference -> compiler: ~140%
- reference -> vecotorized: ~120% 
+ reference -> vecotorized: ~140% 
  reference_double -> vectorized_double: ~80%
 
 For double I reran the job multiple times always with the same result.
 The only thing I can think of : the initialization of our arrays is not vectorized by omp and might
 dominate in the execution time due to that. 
-Whereas the compiler vectorization will vectorize every optimization it deems feasable.
+Whereas the compiler vectorization will vectorize every optimization it deems feasable which might
+result in worse performance if the code is a bit more complicated.
 And that would also be the advantage of omp vs compiler one can individually specify which parts of
 the programm we want to be vectorized. This can have performance benefits but also negatively affect the
 execution time.
