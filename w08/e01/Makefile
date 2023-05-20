@@ -1,5 +1,5 @@
 CC=gcc
-CC_FLAGS=-O3 -g3 -lm
+CC_FLAGS=-O3 -g3 -lm -pg
 
 .PHONEY: all
 all: real
@@ -11,7 +11,11 @@ real: $(SRC)
 
 .PHONEY: clean
 clean:
-	@rm real
+	@rm real analysis.txt
+
+analysis.txt: real
+	@ ./real
+	@ gprof ./real gmon.out --line >> $@
 
 .PHONEY: run
 run: all
