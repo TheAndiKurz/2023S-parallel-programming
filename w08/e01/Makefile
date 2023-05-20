@@ -15,7 +15,7 @@ clean:
 
 analysis.txt: real
 	@ ./real
-	@ gprof ./real gmon.out --line >> $@
+	@ gprof ./real gmon.out >> $@
 
 .PHONEY: run
 run: all
