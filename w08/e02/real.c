@@ -571,6 +571,7 @@ static void rprj3(void* or, int m1k, int m2k, int m3k, void* os, int m1j, int m2
         d3 = 1;
     }
 
+#pragma omp parallel for private(j3, i3, j2, i2, j1, i1, x1, y1, y2, x2) shared(r, s)
     for(j3 = 1; j3 < m3j - 1; j3++) {
         i3 = 2 * j3 - d3;
         for(j2 = 1; j2 < m2j - 1; j2++) {
@@ -634,6 +635,7 @@ static void interp(void* oz, int mm1, int mm2, int mm3, void* ou, int n1, int n2
 
     if(timeron) timer_start(T_interp);
     if(n1 != 3 && n2 != 3 && n3 != 3) {
+#pragma omp parallel for private(i3, i2, i1, z1, z2, z3) shared(z, u)
         for(i3 = 0; i3 < mm3 - 1; i3++) {
             for(i2 = 0; i2 < mm2 - 1; i2++) {
                 for(i1 = 0; i1 < mm1; i1++) {
@@ -785,10 +787,11 @@ static void norm2u3(void* or, int n1, int n2, int n3, double* rnm2, double* rnmu
     max_rnmu = 0.0;
 
     double my_rnmu = 0.0;
+#pragma omp parallel for reduction(+:s) private(my_rnmu, i3, i2, i1) shared(n3, n2, n1, a, r,) collapse(3)
     for(i3 = 1; i3 < n3 - 1; i3++) {
         for(i2 = 1; i2 < n2 - 1; i2++) {
             for(i1 = 1; i1 < n1 - 1; i1++) {
-                s = s + pow(r[i3][i2][i1], 2.0);
+                s += r[i3][i2][i1] * r[i3][i2][i1]; // NOTE: remove unnecessary function call pow
                 a = fabs(r[i3][i2][i1]);
                 my_rnmu = (a > my_rnmu) ? a : my_rnmu;
             }
@@ -897,6 +900,7 @@ static void zran3(void* oz, int n1, int n2, int n3, int nx1, int ny1, int k) {
     //---------------------------------------------------------------------
     // fill array
     //---------------------------------------------------------------------
+#pragma omp parallel for private(i2, i1, xx, x1, rdummy) shared(z)
     for(i3 = 1; i3 < e3; i3++) {
         x1 = starts[i3];
         for(i2 = 1; i2 < e2; i2++) {
@@ -922,6 +926,7 @@ static void zran3(void* oz, int n1, int n2, int n3, int nx1, int ny1, int k) {
         j3[i][0] = 0;
     }
 
+#pragma omp parallel for private(i3, i2, i1) shared(z)
     for(i3 = 1; i3 < n3 - 1; i3++) {
         double(*zi3)[n1] = z[i3];
         for(i2 = 1; i2 < n2 - 1; i2++) {
@@ -1029,6 +1034,7 @@ static void zran3(void* oz, int n1, int n2, int n3, int nx1, int ny1, int k) {
     }
     */
 
+#pragma omp parallel for private(i3, i2, i1) shared(n3, n2, n1, z) schedule(static)
     for(i3 = 0; i3 < n3; i3++) {
         for(i2 = 0; i2 < n2; i2++) {
             for(i1 = 0; i1 < n1; i1++) {
