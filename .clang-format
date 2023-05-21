@@ -12,4 +12,4 @@ IndentWidth: 4
 PointerAlignment: Left
 SpaceBeforeParens: Never
 TabWidth: 4
-
+AlignEscapedNewlines: Right
