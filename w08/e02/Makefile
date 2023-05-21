@@ -1,10 +1,11 @@
 CC=gcc
 CC_FLAGS= -O3 -g3 -lm -fopenmp
 
+
 .PHONEY: all
 all: real
 
-SRC=$(wildcard *.c)
+SRC=$(wildcard *.c) ../../tools/csv/csv.c ../../tools/time/time.c
 
 real: $(SRC)
 	@$(CC) $(SRC) -o real $(CC_FLAGS) -pg
@@ -14,7 +15,7 @@ real_test: $(SRC)
 
 .PHONEY: clean
 clean:
-	@rm real analysis.txt
+	@rm real analysis.txt times.csv
 
 analysis.txt: real
 	@ ./real

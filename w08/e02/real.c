@@ -1,4 +1,3 @@
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +6,9 @@
 #include "print_results.h"
 #include "randdp.h"
 #include "timers.h"
+
+#include "../../tools/time/time.h"
+#include <omp.h>
 
 static void setup(int* n1, int* n2, int* n3);
 static void mg3P(double u[], double v[], double r[], double a[4], double c[4], int n1, int n2,
@@ -42,6 +44,7 @@ static int is1, is2, is3, ie1, ie2, ie3;
 double starts[NM];
 
 int main() {
+    double start_time = omp_get_wtime();
     //-------------------------------------------------------------------------c
     // k is the current level. It is passed down through subroutine args
     // and is NOT global. it is the current iteration
@@ -205,7 +208,7 @@ int main() {
     timer_stop(T_init);
     tinit = timer_read(T_init);
 
-    // printf(" Initialization time: %15.3f seconds\n\n", tinit);
+    //printf(" Initialization time: %15.3f seconds\n\n", tinit);
 
     for(i = T_bench; i < T_last; i++) {
         timer_clear(i);
@@ -309,6 +312,11 @@ int main() {
             }
         }
     }
+    double end_time = omp_get_wtime();
+    double time = end_time - start_time;
+    int threads = omp_get_num_threads();
+
+    add_time("mystery application", threads, time);
 
     return 0;
 }
