@@ -796,19 +796,15 @@ static void norm2u3(void* or, int n1, int n2, int n3, double* rnm2, double* rnmu
     max_rnmu = 0.0;
 
     double my_rnmu = 0.0;
-#pragma omp parallel for reduction(+:s) private(my_rnmu, i3, i2, i1) shared(n3, n2, n1, a, r,) collapse(3)
+#pragma omp parallel for reduction(+:s) reduction (max:max_rnmu) private(my_rnmu, i3, i2, i1) shared(n3, n2, n1, a, r,) collapse(3)
     for(i3 = 1; i3 < n3 - 1; i3++) {
         for(i2 = 1; i2 < n2 - 1; i2++) {
             for(i1 = 1; i1 < n1 - 1; i1++) {
-                s += r[i3][i2][i1] * r[i3][i2][i1]; // NOTE: remove unnecessary function call pow
-                a = fabs(r[i3][i2][i1]);
-                my_rnmu = (a > my_rnmu) ? a : my_rnmu;
+                double value = r[i3][i2][i1];
+                s += value * value; // NOTE: remove unnecessary function call pow
+                max_rnmu = fmax(my_rnmu, fabs(value)); // NOTE: use reduce to find max
             }
         }
-    }
-
-    if(my_rnmu > max_rnmu) {
-        max_rnmu = (my_rnmu > max_rnmu) ? my_rnmu : max_rnmu;
     }
 
     *rnmu = max_rnmu;
