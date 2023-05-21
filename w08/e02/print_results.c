@@ -9,6 +9,9 @@ void print_results(char class, int n1, int n2, int n3, int niter,
     char *compiletime, char *cs1, char *cs2, char *cs3, char *cs4, char *cs5,
     char *cs6, char *cs7)
 {
+  char size[16];
+  int j;
+
   printf( "\n\n Benchmark Completed.\n");
   printf( " Class           =             %12c\n", class );
 

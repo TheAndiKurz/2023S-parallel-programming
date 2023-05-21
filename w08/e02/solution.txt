@@ -1,0 +1,5 @@
+The acquired performance profile can give us a general understanding of the runtime
+behaviour of our programm. We are able to see how much time in % of the overall runtime the program
+spends in a given function. Therefore this function(s) are probably the best to start of with optimizing
+as the most computational effort lies there.
+

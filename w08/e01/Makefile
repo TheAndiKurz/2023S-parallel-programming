@@ -1,5 +1,5 @@
 CC=gcc
-CC_FLAGS= -Wall -Werror -Wpedantic -O3 -g3 -lm -pg
+CC_FLAGS= -O3 -g3 -lm -pg
 
 .PHONEY: all
 all: real
