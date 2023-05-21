@@ -15,7 +15,6 @@
 
 
 # for threads in [1, 2, 4, 8] use monte_carlo with 500000000 samples
-export VARIANT="ex2_optimized_-O0"
 for threads in 1 2 4 8; do
   export OMP_NUM_THREADS=$threads
   echo "threads: $threads"

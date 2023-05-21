@@ -208,7 +208,7 @@ int main() {
     timer_stop(T_init);
     tinit = timer_read(T_init);
 
-    //printf(" Initialization time: %15.3f seconds\n\n", tinit);
+    // printf(" Initialization time: %15.3f seconds\n\n", tinit);
 
     for(i = T_bench; i < T_last; i++) {
         timer_clear(i);
@@ -314,7 +314,7 @@ int main() {
     }
     double end_time = omp_get_wtime();
     double time = end_time - start_time;
-    int threads = omp_get_num_threads();
+    int threads = omp_get_max_threads();
 
     add_time("mystery application", threads, time);
 
@@ -336,13 +336,13 @@ static void setup(int* n1, int* n2, int* n3) {
             ng[k][ax] = ng[k + 1][ax] / 2;
         }
     }
+
     for(k = lt; k >= 1; k--) {
         nx[k] = ng[k][0];
         ny[k] = ng[k][1];
         nz[k] = ng[k][2];
     }
 
-    // #pragma omp parallel for private(ax) shared(ng)
     for(k = lt; k >= 1; k--) {
         for(ax = 0; ax < 3; ax++) {
             mi[k][ax] = 2 + ng[k][ax];
@@ -801,7 +801,7 @@ static void norm2u3(void* or, int n1, int n2, int n3, double* rnm2, double* rnmu
         for(i2 = 1; i2 < n2 - 1; i2++) {
             for(i1 = 1; i1 < n1 - 1; i1++) {
                 double value = r[i3][i2][i1];
-                s += value * value; // NOTE: remove unnecessary function call pow
+                s += value * value;                    // NOTE: remove unnecessary function call pow
                 max_rnmu = fmax(my_rnmu, fabs(value)); // NOTE: use reduce to find max
             }
         }
@@ -1162,11 +1162,13 @@ static void bubble(double ten[][2], int j1[][2], int j2[][2], int j3[][2], int m
 }
 
 static void zero3(void* oz, int n1, int n2, int n3) {
+  double start = omp_get_wtime();
+
     double(*z)[n2][n1] = (double(*)[n2][n1])oz;
 
     int i1, i2, i3;
 
-  // #pragma omp parallel for collapse(3)
+    #pragma omp parallel for private(i3, i2, i1) shared(n3, n2, n1, z) schedule(static)
     for(i3 = 0; i3 < n3; i3++) {
         for(i2 = 0; i2 < n2; i2++) {
             for(i1 = 0; i1 < n1; i1++) {
@@ -1174,4 +1176,7 @@ static void zero3(void* oz, int n1, int n2, int n3) {
             }
         }
     }
+
+  double end = omp_get_wtime();
+  printf("time: %fl", end-start);
 }
