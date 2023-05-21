@@ -11,11 +11,11 @@ real: $(SRC)
 	@$(CC) $(SRC) -o real $(CC_FLAGS) -pg
 
 real_test: $(SRC)
-	@$(CC) $(SRC) -o real $(CC_FLAGS)
+	@$(CC) $(SRC) -o real $(CC_FLAGS) -ftree-vectorize -march=native
 
 .PHONEY: clean
 clean:
-	@rm real analysis.txt times.csv
+	@rm real analysis.txt
 
 analysis.txt: real
 	@ ./real

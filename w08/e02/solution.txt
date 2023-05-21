@@ -1,0 +1,5 @@
+For this exercise the general workflow was to run the profiler with the programm to see which
+function was dominating the execution time at first this was quite helpful but at some point the most
+runtime intense parts of the program were those that either, weren't parallelizable or were already
+optimized to my best knowledge. At that point I just started looking through the code to find
+loops that were worth parallelizing.

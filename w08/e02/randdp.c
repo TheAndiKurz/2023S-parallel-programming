@@ -53,6 +53,7 @@ double randlc( double *x, double a )
   //  Z = A1 * X2 + A2 * X1  (mod 2^23), and then
   //  X = 2^23 * Z + A2 * X2  (mod 2^46).
   //--------------------------------------------------------------------
+  // NOTE: no parallelization applicable
   t1 = r23 * (*x);
   x1 = (int) t1;
   x2 = *x - t23 * x1;

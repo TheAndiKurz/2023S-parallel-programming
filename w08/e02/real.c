@@ -316,7 +316,7 @@ int main() {
     double time = end_time - start_time;
     int threads = omp_get_max_threads();
 
-    add_time("mystery application", threads, time);
+    add_time("mystery application 9.b remove 8.", threads, time);
 
     return 0;
 }
@@ -801,7 +801,7 @@ static void norm2u3(void* or, int n1, int n2, int n3, double* rnm2, double* rnmu
         for(i2 = 1; i2 < n2 - 1; i2++) {
             for(i1 = 1; i1 < n1 - 1; i1++) {
                 double value = r[i3][i2][i1];
-                s += value * value;                    // NOTE: remove unnecessary function call pow
+                s += value * value; // NOTE: remove "unnecessary" function call pow
                 max_rnmu = fmax(my_rnmu, fabs(value)); // NOTE: use reduce to find max
             }
         }
@@ -833,6 +833,7 @@ static void comm3(void* ou, int n1, int n2, int n3, int kk) {
 
     if(timeron) timer_start(T_comm3);
 
+#pragma omp parallel for private(i2, i1) shared(n3, n2, u)
     for(i3 = 1; i3 < n3 - 1; i3++) {
         for(i2 = 1; i2 < n2 - 1; i2++) {
             u[i3][i2][0] = u[i3][i2][n1 - 2];
@@ -847,6 +848,8 @@ static void comm3(void* ou, int n1, int n2, int n3, int kk) {
         }
     }
 
+// NOTE: seems to have negative impact on performance to parallelize 
+// #pragma omp parallel for private(i2, i1) shared(n3, n2, u)
     for(i2 = 0; i2 < n2; i2++) {
         for(i1 = 0; i1 < n1; i1++) {
             u[0][i2][i1] = u[n3 - 2][i2][i1];
@@ -1109,6 +1112,7 @@ static double power(double a, int n) {
 //---------------------------------------------------------------------
 // bubble        does a bubble sort in direction dir
 //---------------------------------------------------------------------
+// NOTE: this bubble sort? algorithm is not easily parallelizable
 static void bubble(double ten[][2], int j1[][2], int j2[][2], int j3[][2], int m, int ind) {
     double temp;
     int i, j_temp;
@@ -1162,13 +1166,11 @@ static void bubble(double ten[][2], int j1[][2], int j2[][2], int j3[][2], int m
 }
 
 static void zero3(void* oz, int n1, int n2, int n3) {
-  double start = omp_get_wtime();
-
     double(*z)[n2][n1] = (double(*)[n2][n1])oz;
 
     int i1, i2, i3;
 
-    #pragma omp parallel for private(i3, i2, i1) shared(n3, n2, n1, z) schedule(static)
+#pragma omp parallel for private(i2, i1) shared(z)
     for(i3 = 0; i3 < n3; i3++) {
         for(i2 = 0; i2 < n2; i2++) {
             for(i1 = 0; i1 < n1; i1++) {
@@ -1176,7 +1178,4 @@ static void zero3(void* oz, int n1, int n2, int n3) {
             }
         }
     }
-
-  double end = omp_get_wtime();
-  printf("time: %fl", end-start);
 }
