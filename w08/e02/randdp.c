@@ -119,15 +119,14 @@ void vranlc( int n, double *x, double a, double y[] )
   //--------------------------------------------------------------------
   //  Generate N results.   This loop is not vectorizable.
   //--------------------------------------------------------------------
+  // NOTE: not parallelizable due to dependency on *x
   //#pragma omp parallel for private(i, t1, x1, x2, t2, z, t3, t4, x) shared(n, r23, t23, a1, a2, r46, t46, y)
-  #pragma omp parallel for private(i, t1, x1, x2, t2, z, t3, t4, x) shared(n, r23, t23, a1, a2, r46, t46, y)
   for ( i = 0; i < n; i++ ) {
     //--------------------------------------------------------------------
     //  Break X into two parts such that X = 2^23 * X1 + X2, compute
     //  Z = A1 * X2 + A2 * X1  (mod 2^23), and then
     //  X = 2^23 * Z + A2 * X2  (mod 2^46).
     //--------------------------------------------------------------------
-    // NOTE: not parallelizable due to dependency on *x
     t1 = r23 * (*x);
     x1 = (int) t1;
     x2 = *x - t23 * x1;
