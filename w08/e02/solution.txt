@@ -6,7 +6,7 @@ loops that were worth parallelizing.
 
 In local_optimizations.png one can follow the optimization process graphically
 
-on the lcc the optimized version was benchmarked and after the first analysis on the lcc the zero3
+on the lcc the optimized version was benchmarked and after the lcc_first_analysis.txt the zero3
 optimization was removed to see if that would improve performance.
 See lcc_performance.png for more info
 It seems like my optimized programm performes better with 4 cores than with 8 which seems odd as there
