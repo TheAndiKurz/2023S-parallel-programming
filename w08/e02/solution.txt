@@ -3,3 +3,16 @@ function was dominating the execution time at first this was quite helpful but a
 runtime intense parts of the program were those that either, weren't parallelizable or were already
 optimized to my best knowledge. At that point I just started looking through the code to find
 loops that were worth parallelizing.
+
+In local_optimizations.png one can follow the optimization process graphically
+
+on the lcc the optimized version was benchmarked and after the first analysis on the lcc the zero3
+optimization was removed to see if that would improve performance.
+See lcc_performance.png for more info
+It seems like my optimized programm performes better with 4 cores than with 8 which seems odd as there
+still is a performance improvement visible on the local benchmark.
+
+The optimized version with 8 threads has a speed up of 
+(17.603058 / 8.196989) ~ 2.1475 with respect to the unoptimized version of e01
+for 4 threads it would be (17.603058 / 7.218977) ~ 2.43844
+

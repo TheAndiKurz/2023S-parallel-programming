@@ -11,7 +11,7 @@ real: $(SRC)
 	@$(CC) $(SRC) -o real $(CC_FLAGS) -pg
 
 real_test: $(SRC)
-	@$(CC) $(SRC) -o real $(CC_FLAGS) -ftree-vectorize -march=native
+	@$(CC) $(SRC) -o real $(CC_FLAGS)
 
 .PHONEY: clean
 clean:
