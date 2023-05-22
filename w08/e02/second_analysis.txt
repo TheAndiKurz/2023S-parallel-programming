@@ -2,24 +2,17 @@ Flat profile:
 
 Each sample counts as 0.01 seconds.
   %   cumulative   self              self     total           
- time   seconds   seconds    calls  ms/call  ms/call  name    
-
- 42.08      1.78     1.78      170    10.47    12.51  resid
- 19.86      2.62     0.84      168     5.00     7.04  psinv
- 17.49      3.36     0.74   131072     0.01     0.01  vranlc
-  7.80      3.69     0.33      147     2.24     4.28  rprj3
-  6.62      3.97     0.28      147     1.90     1.90  interp
-  6.15      4.23     0.26      491     0.53     2.04  norm2u3
-  0.00      4.23     0.00   131642     0.00     0.00  randlc
-  0.00      4.23     0.00       21     0.00   187.15  mg3P.constprop.0
-  0.00      4.23     0.00       19     0.00     0.00  timer_clear
-  0.00      4.23     0.00        4     0.00     0.00  wtime_
-  0.00      4.23     0.00        2     0.00     0.00  setup
-  0.00      4.23     0.00        2     0.00     0.00  timer_read
-  0.00      4.23     0.00        2     0.00     0.00  timer_start
-  0.00      4.23     0.00        2     0.00     0.00  timer_stop
-  0.00      4.23     0.00        1     0.00     0.00  print_results
-
+ time   seconds   seconds    calls  us/call  us/call  name    
+ 97.33     60.45    60.45                             setup
+  2.06     61.73     1.28    75219    17.02    17.02  vranlc
+  0.63     62.12     0.39      485   804.30   804.30  norm2u3
+  0.00     62.12     0.00    71006     0.00     0.00  randlc
+  0.00     62.12     0.00      168     0.00   804.30  psinv
+  0.00     62.12     0.00      147     0.00     0.00  interp
+  0.00     62.12     0.00      147     0.00   930.14  resid
+  0.00     62.12     0.00        1     0.00     0.00  csv_add_line
+  0.00     62.12     0.00        1     0.00     0.00  csv_append
+  0.00     62.12     0.00        1     0.00     0.00  csv_close
 
  %         the percentage of the total running time of the
 time       program used by this function.
@@ -48,7 +41,7 @@ name       the name of the function.  This is the minor sort
 	   in parenthesis it shows where it would appear in
 	   the gprof listing if it were to be printed.
 
-Copyright (C) 2012-2023 Free Software Foundation, Inc.
+Copyright (C) 2012-2016 Free Software Foundation, Inc.
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
@@ -57,87 +50,55 @@ notice and this notice are preserved.
 		     Call graph (explanation follows)
 
 
-
-granularity: each sample hit covers 4 byte(s) for 0.24% of 4.23 seconds
+granularity: each sample hit covers 2 byte(s) for 0.02% of 62.12 seconds
 
 index % time    self  children    called     name
                                                  <spontaneous>
-[1]    100.0    0.00    4.23                 main [1]
-                0.00    3.93      21/21          mg3P.constprop.0 [2]
-                0.24    0.05      23/170         resid [3]
-
-                0.00    0.01       6/491         norm2u3 [5]
-                0.00    0.00      19/19          timer_clear [10]
-                0.00    0.00       2/2           timer_start [14]
-                0.00    0.00       2/2           setup [12]
-                0.00    0.00       2/2           timer_read [13]
-                0.00    0.00       2/2           timer_stop [15]
-                0.00    0.00       1/1           print_results [16]
+[1]     99.4   60.45    1.28                 setup [1]
+                1.28    0.00   75219/75219       vranlc [2]
+                0.00    0.00   70436/71006       randlc [7]
 -----------------------------------------------
-
-                0.00    3.93      21/21          main [1]
-[2]     92.9    0.00    3.93      21         mg3P.constprop.0 [2]
-                1.54    0.30     147/170         resid [3]
-                0.84    0.34     168/168         psinv [4]
-                0.33    0.30     147/147         rprj3 [7]
-                0.28    0.00     147/147         interp [8]
+                1.28    0.00   75219/75219       setup [1]
+[2]      2.1    1.28    0.00   75219         vranlc [2]
 -----------------------------------------------
-                0.24    0.05      23/170         main [1]
-                1.54    0.30     147/170         mg3P.constprop.0 [2]
-[3]     50.3    1.78    0.35     170         resid [3]
-                0.09    0.26     170/491         norm2u3 [5]
+                                                 <spontaneous>
+[3]      0.6    0.00    0.39                 mg3P.constprop.0 [3]
+                0.00    0.14     147/147         resid [5]
+                0.00    0.14     168/168         psinv [6]
+                0.12    0.00     147/485         norm2u3 [4]
+                0.00    0.00     147/147         interp [8]
 -----------------------------------------------
-                0.84    0.34     168/168         mg3P.constprop.0 [2]
-[4]     27.9    0.84    0.34     168         psinv [4]
-                0.09    0.25     168/491         norm2u3 [5]
+                                   8             norm2u3 [4]
+                0.12    0.00     147/485         mg3P.constprop.0 [3]
+                0.14    0.00     168/485         psinv [6]
+                0.14    0.00     170/485         resid [5]
+[4]      0.6    0.39    0.00     485+8       norm2u3 [4]
+                0.00    0.00     570/71006       randlc [7]
+                                   8             norm2u3 [4]
 -----------------------------------------------
-                                   8             norm2u3 [5]
-                0.00    0.01       6/491         main [1]
-                0.08    0.22     147/491         rprj3 [7]
-                0.09    0.25     168/491         psinv [4]
-                0.09    0.26     170/491         resid [3]
-[5]     23.6    0.26    0.74     491+8       norm2u3 [5]
-                0.74    0.00  131072/131072      vranlc [6]
-                0.00    0.00  131642/131642      randlc [9]
-                                   8             norm2u3 [5]
+                0.00    0.14     147/147         mg3P.constprop.0 [3]
+[5]      0.2    0.00    0.14     147         resid [5]
+                0.14    0.00     170/485         norm2u3 [4]
 -----------------------------------------------
-                0.74    0.00  131072/131072      norm2u3 [5]
-[6]     17.5    0.74    0.00  131072         vranlc [6]
+                0.00    0.14     168/168         mg3P.constprop.0 [3]
+[6]      0.2    0.00    0.14     168         psinv [6]
+                0.14    0.00     168/485         norm2u3 [4]
 -----------------------------------------------
-                0.33    0.30     147/147         mg3P.constprop.0 [2]
-[7]     14.9    0.33    0.30     147         rprj3 [7]
-                0.08    0.22     147/491         norm2u3 [5]
+                0.00    0.00     570/71006       norm2u3 [4]
+                0.00    0.00   70436/71006       setup [1]
+[7]      0.0    0.00    0.00   71006         randlc [7]
 -----------------------------------------------
-                0.28    0.00     147/147         mg3P.constprop.0 [2]
-[8]      6.6    0.28    0.00     147         interp [8]
-
+                0.00    0.00     147/147         mg3P.constprop.0 [3]
+[8]      0.0    0.00    0.00     147         interp [8]
 -----------------------------------------------
-                0.00    0.00  131642/131642      norm2u3 [5]
-[9]      0.0    0.00    0.00  131642         randlc [9]
+                0.00    0.00       1/1           add_time [12]
+[9]      0.0    0.00    0.00       1         csv_add_line [9]
 -----------------------------------------------
-                0.00    0.00      19/19          main [1]
-[10]     0.0    0.00    0.00      19         timer_clear [10]
+                0.00    0.00       1/1           add_time [12]
+[10]     0.0    0.00    0.00       1         csv_append [10]
 -----------------------------------------------
-                0.00    0.00       2/4           timer_start [14]
-                0.00    0.00       2/4           timer_stop [15]
-[11]     0.0    0.00    0.00       4         wtime_ [11]
------------------------------------------------
-                0.00    0.00       2/2           main [1]
-[12]     0.0    0.00    0.00       2         setup [12]
------------------------------------------------
-                0.00    0.00       2/2           main [1]
-[13]     0.0    0.00    0.00       2         timer_read [13]
------------------------------------------------
-                0.00    0.00       2/2           main [1]
-[14]     0.0    0.00    0.00       2         timer_start [14]
-                0.00    0.00       2/4           wtime_ [11]
------------------------------------------------
-                0.00    0.00       2/2           main [1]
-[15]     0.0    0.00    0.00       2         timer_stop [15]
-                0.00    0.00       2/4           wtime_ [11]
------------------------------------------------
-                0.00    0.00       1/1           main [1]
-[16]     0.0    0.00    0.00       1         print_results [16]
+                0.00    0.00       1/1           add_time [12]
+[11]     0.0    0.00    0.00       1         csv_close [11]
 -----------------------------------------------
 
  This table describes the call tree of the program, and was sorted by
@@ -222,7 +183,7 @@ index % time    self  children    called     name
  for that member, how many times it was called from other members of
  the cycle.
 
-Copyright (C) 2012-2023 Free Software Foundation, Inc.
+Copyright (C) 2012-2016 Free Software Foundation, Inc.
 
 Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
@@ -230,8 +191,7 @@ notice and this notice are preserved.
 
 Index by function name
 
-   [8] interp (real.c)         [9] randlc                 [13] timer_read
-   [2] mg3P.constprop.0 (real.c) [3] resid (real.c)       [14] timer_start
-   [5] norm2u3 (real.c)        [7] rprj3 (real.c)         [15] timer_stop
-  [16] print_results          [12] setup (real.c)          [6] vranlc
-   [4] psinv (real.c)         [10] timer_clear            [11] wtime_
+   [9] csv_add_line            [4] norm2u3 (real.c)        [1] setup (real.c)
+  [10] csv_append              [6] psinv (real.c)          [2] vranlc
+  [11] csv_close               [7] randlc
+   [8] interp (real.c)         [5] resid (real.c)
