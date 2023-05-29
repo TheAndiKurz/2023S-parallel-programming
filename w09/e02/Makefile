@@ -15,5 +15,5 @@ analysis.txt: $(SRC)
 
 .PHONEY: clean
 clean:
-	@rm analysis analysis.txt
+	@rm analysis
 
