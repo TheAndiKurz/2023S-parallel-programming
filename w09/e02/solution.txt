@@ -1,0 +1,18 @@
+The loops at lines 10, 17 and 25 were vectorized successfully
+whereas loops 22 and 27 were not.
+
+The loop at line 22 could not be vectorized because the offset is not affine.
+Due to the nature of this loop (using modulo and argc) The compiler can not determine the offset at which the array is accessed
+and can therefore not vectorize this loop. With modulo we might introduce data dependencies and therefore this operation can not be vectorized.
+
+The loop at line 27 fails due to the use of printf() which clobbers memmory, meaning printf does not know which memory locations
+might be accessed during its execution.
+
+The compiler performs various analyses beyond checking for dependencies and semantic correctness.
+
+    Analyzing loop nests and loop forms.
+    Determining the number of loop iterations.
+    Analyzing data references and scalar cycles.
+    Determining precisions and performing pattern recognition.
+    Analyzing data reference accesses and marking relevant statements to be vectorized.
+    Analyzing data reference dependences.
