@@ -1,0 +1,5 @@
+There sems to be a lot of variance for for all of my runs not sure why.
+For the runs the ones where loop distribution was applied took a bit longer which makes sense as
+the overhead of creating the for loop and running it is duplicated.
+for task 1 it seems like the parallelization made it slower.
+
