@@ -44,12 +44,12 @@ S2 d S2:
     distance vector: (0) d (0, 0)
     direction vector: (=)
 ```c
+#pragma omp parallel for
 for (int i=0; i < n; i++) {
-    a = (x[i] + y[i]) / (i+1);
-    z[i] = a; 
+    z[i] = (x[i] + y[i]) / (i+1);
 }
 
-a = (x[n-1] + y[n-1]) / n);
+a = z[n-1];
 f = sqrt(a + k); // NOTE: Dependant on the last sequential value of a.
 ```
 ---------------------------------------------------------------------------------------------------
