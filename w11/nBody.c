@@ -10,7 +10,7 @@
 
 #define TIME_STEP 1
 
-#define GRAVITATION_CONSTANT -1
+#define GRAVITATION_CONSTANT -1 // NOTE: 6.67430e-11 ??
 
 typedef struct {
     vec3 pos;
@@ -71,7 +71,7 @@ void particle_calculate_force(particle* p, universe* u) {
         }
 
         vec3 diff = vec3_sub(p->pos, q->pos);
-        double dist_sq = vec3_dot(diff, diff);
+        double dist_sq = vec3_dot(diff, diff); // NOTE: not sure if this is radius^2
         double force = GRAVITATION_CONSTANT * (p->mass * q->mass) / (dist_sq);
         vec3 dir = vec3_normalize(diff);
 
@@ -85,6 +85,7 @@ void particle_apply_force(particle* p) {
 
     p->velocity = vec3_add(p->velocity, vec3_mul(acceleration, TIME_STEP));
     p->pos = vec3_add(p->pos, vec3_mul(p->velocity, TIME_STEP));
+  // NOTE: should force be reset to zero after application?
 }
 
 void universe_calculate_step(universe* u) {
