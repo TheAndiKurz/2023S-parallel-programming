@@ -1,16 +1,18 @@
 #include <math.h>
+#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../tools/time/time.h"
 #include "vec3.h"
 
 #define SIZE_UNIVERSE_X 100
 #define SIZE_UNIVERSE_Y 100
 #define SIZE_UNIVERSE_Z 100
 
-#define TIME_STEP 1
+#define TIME_STEP 0.005
 
-#define GRAVITATION_CONSTANT -1 // NOTE: 6.67430e-11 ??
+#define GRAVITATION_CONSTANT -1
 
 typedef struct {
     vec3 pos;
@@ -56,27 +58,32 @@ void random_universe(universe* u, size_t n) {
         pos.z = fabs(pos.z);
 
         // generate a double between 10000 and 100000
-        double mass = rand() / (double)RAND_MAX * 90000 + 10000;
+        double mass = (rand() / (double)RAND_MAX) * 90000 + 10000;
         particle p;
         particle_init(&p, pos, mass);
         universe_insert_particle(u, i, p);
     }
 }
 
-void particle_calculate_force(particle* p, universe* u) {
-    for(size_t i = 0; i < u->n; i++) {
+void universe_calculate_forces(particle* p, universe* u, size_t start_index) {
+    for(size_t i = start_index; i < u->n; i++) {
         particle* q = &u->particles[i];
-        if(p == q) {
+
+        vec3 diff = vec3_sub(p->pos, q->pos);
+        double dist_sq = vec3_dot(diff, diff);
+        if(dist_sq <= 100) {
             continue;
         }
 
-        vec3 diff = vec3_sub(p->pos, q->pos);
-        double dist_sq = vec3_dot(diff, diff); // NOTE: not sure if this is radius^2
         double force = GRAVITATION_CONSTANT * (p->mass * q->mass) / (dist_sq);
         vec3 dir = vec3_normalize(diff);
 
-        vec3 f = vec3_mul(dir, force);
-        p->force = vec3_add(p->force, f);
+        vec3 directional_force = vec3_mul(dir, force);
+        p->force = vec3_add(p->force, directional_force);
+
+        vec3 opposite_force = vec3_sub((vec3){ 0, 0, 0 }, directional_force);
+
+        q->force = vec3_add(q->force, opposite_force);
     }
 }
 
@@ -85,21 +92,27 @@ void particle_apply_force(particle* p) {
 
     p->velocity = vec3_add(p->velocity, vec3_mul(acceleration, TIME_STEP));
     p->pos = vec3_add(p->pos, vec3_mul(p->velocity, TIME_STEP));
-  // NOTE: should force be reset to zero after application?
+    p->force = (vec3){ 0, 0, 0 };
 }
 
 void universe_calculate_step(universe* u) {
 #ifdef PARALLEL
-#pragma omp for
+#pragma omp parallel
 #endif
-    for(size_t i = 0; i < u->n; i++) {
-        particle_calculate_force(&(u->particles[i]), u);
-    }
+    {
 #ifdef PARALLEL
 #pragma omp for
 #endif
-    for(size_t i = 0; i < u->n; i++) {
-        particle_apply_force(&(u->particles[i]));
+        for(size_t i = 0; i < u->n; i++) {
+            universe_calculate_forces(&(u->particles[i]), u, i + 1);
+        }
+
+#ifdef PARALLEL
+#pragma omp for
+#endif
+        for(size_t i = 0; i < u->n; i++) {
+            particle_apply_force(&(u->particles[i]));
+        }
     }
 }
 
@@ -120,9 +133,6 @@ void nBodySimulation(size_t n_particles, size_t n_steps) {
 
     write_gnuplot(data_file, &u);
 
-#ifdef PARALLEL
-#pragma omp parallel
-#endif
     for(size_t i = 0; i < n_steps; i++) {
         universe_calculate_step(&u);
         write_gnuplot(data_file, &u);
@@ -142,7 +152,23 @@ int main(int argc, char* argv[]) {
     size_t n_particles = (size_t)strtoul(argv[1], NULL, 10);
     size_t n_steps = (size_t)strtoul(argv[2], NULL, 10);
 
+    double startTime = omp_get_wtime();
+
     nBodySimulation(n_particles, n_steps);
 
+    double endTime = omp_get_wtime();
+    double exc_time = endTime - startTime;
+    printf("time: %lf\n", exc_time);
+
+    char name[TIME_CELL_LEN];
+    snprintf(name, TIME_CELL_LEN, "particles:%04lu steps:%04lu no double force calc", n_particles,
+             n_steps);
+
+#ifdef PARALLEL
+    size_t threads = omp_get_max_threads();
+#else
+    size_t threads = 0;
+#endif
+    add_time(name, threads, exc_time);
     return 0;
 }

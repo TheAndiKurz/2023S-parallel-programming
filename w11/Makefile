@@ -1,7 +1,7 @@
 # Variables
 CC = gcc
-CFLAGS = -std=gnu11 -Wall -Wextra -lm -O3 -fopenmp -g
-LIBS = $(wildcard ../../tools/**/*.c)
+CFLAGS = -std=gnu11 -Wall -Wextra -lm -O3 -fopenmp -g -Wno-strict-aliasing
+LIBS = $(wildcard ../tools/**/*.c)
 SRC = $(wildcard *.c)
 EXEC = nBody
 
@@ -14,5 +14,8 @@ all: $(EXEC)
 
 clean:
 	rm -f *_seq *_par
+
+plot:
+	gnuplot particle.plt
 
 .PHONY: all
