@@ -11,6 +11,8 @@ output.log
 
 *.zip
 *.csv
+*.dat
+
 
 .vscode
 .ccls-cache
