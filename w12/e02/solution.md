@@ -14,6 +14,17 @@ for (int i = 0; i < N - 1; ++i) {
 }
 ```
 
+The loop can be unrolled by a factor of two, as N is odd:
+```C
+for (int i = 0; i < N - 2; i += 2) {
+    a[i] = b[i] + b[i + 1];
+    a[i + 1] = b[i + 1] + b[i + 2];
+}
+```
+The number of iterations is reduced by 50%. So in total 50% of the compare and add operations are saved. The total work inside the loop body stays the same.
+
+
+
 - Apply loop-invariant code motion, reduce the number of function calls.\
 `a` is of type `double *`
 ```C

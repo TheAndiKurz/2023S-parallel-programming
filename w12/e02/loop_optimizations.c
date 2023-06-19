@@ -45,8 +45,9 @@ void wrapper() {
 #elif VERSION == A_SOL
 
 void a_sol_func(int* a, int* b) {
-    for (int i = 0; i < N - 1; ++i) {
-        a[i] = b[i] + b[i];
+    for (int i = 0; i < N - 2; i += 2) {
+        a[i] = b[i] + b[i + 1];
+        a[i + 1] = b[i + 1] + b[i + 2];
     }
 }
 
