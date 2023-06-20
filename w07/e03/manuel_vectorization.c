@@ -31,7 +31,7 @@ void init(float* a, float* b, float* c, int size) {
 }
 
 // Compute a[i] += b[i] * c[i] for three float vectors a, b, and c
-void compute(float* a, float* b, float* c, int size) {
+void compute(float *a, float* b, float* c, int size) {
     for(int run = 0; run < REPS; ++run) {
 #ifdef VECTORIZE
         for(int i = 0; i < size; i += 4) {

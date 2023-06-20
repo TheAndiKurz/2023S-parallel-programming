@@ -7,11 +7,11 @@
 
 #define SIZE 1000
 #define REPS 1000000
-#define A_VAL 1.0
-#define B_VAL 2.0
-#define C_VAL 3.0
-#define RESULT 6000001.0
-#define ASSERT_EPSILON 0.001
+#define A_VAL 1.0f
+#define B_VAL 2.0f
+#define C_VAL 3.0f
+#define RESULT 6000001.0f
+#define ASSERT_EPSILON 0.001f
 
 #ifndef NAME
 #define NAME "auto vectorize"

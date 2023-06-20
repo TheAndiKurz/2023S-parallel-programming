@@ -4,6 +4,7 @@ CFLAGS = -std=gnu11 -Wall -Wextra -lm -O1 -g -fopenmp
 LIBS = $(wildcard ../../tools/**/*.c)
 SRC = $(wildcard *.c)
 EXEC = $(SRC:%.c=%)
+CC = /usr/local/bin/gcc-13
 
 # Rules
 all: $(EXEC)

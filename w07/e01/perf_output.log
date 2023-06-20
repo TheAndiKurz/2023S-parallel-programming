@@ -1,0 +1,145 @@
+  Loading gcc/10.3.0
+SIMD_INST_RETIRED.PACKED_SINGLE -------------------------------------------------------
+
+
+ Performance counter stats for './reference 2048':
+
+                 0      rC701:u                                                     
+
+       2.494549465 seconds time elapsed
+
+       2.482269000 seconds user
+       0.001999000 seconds sys
+
+
+
+ Performance counter stats for './vectorized 2048':
+
+                 0      rC701:u                                                     
+
+       1.730499497 seconds time elapsed
+
+       1.726281000 seconds user
+       0.002000000 seconds sys
+
+
+SIMD_INST_RETIRED.SCALAR_SINGLE -------------------------------------------------------
+
+
+ Performance counter stats for './reference 2048':
+
+                 0      rC702:u                                                     
+
+       2.484113428 seconds time elapsed
+
+       2.480414000 seconds user
+       0.002000000 seconds sys
+
+
+
+ Performance counter stats for './vectorized 2048':
+
+                 0      rC702:u                                                     
+
+       1.728533489 seconds time elapsed
+
+       1.724140000 seconds user
+       0.002998000 seconds sys
+
+
+SIMD_INST_RETIRED.PACKED_DOUBLE -------------------------------------------------------
+
+
+ Performance counter stats for './reference 2048':
+
+                 0      rC702:u                                                     
+
+       2.484675565 seconds time elapsed
+
+       2.478885000 seconds user
+       0.003998000 seconds sys
+
+
+
+ Performance counter stats for './vectorized 2048':
+
+                 0      rC702:u                                                     
+
+       1.729287666 seconds time elapsed
+
+       1.726639000 seconds user
+       0.001000000 seconds sys
+
+
+SIMD_INST_RETIRED.SCALAR_DOUBLE -------------------------------------------------------
+
+
+ Performance counter stats for './reference 2048':
+
+            129266      rC708:u                                                     
+
+       2.484266506 seconds time elapsed
+
+       2.480251000 seconds user
+       0.002001000 seconds sys
+
+
+
+ Performance counter stats for './vectorized 2048':
+
+            108826      rC708:u                                                     
+
+       1.731480921 seconds time elapsed
+
+       1.726088000 seconds user
+       0.001998000 seconds sys
+
+
+SIMD_INST_RETIRED.VECTOR -------------------------------------------------------
+
+
+ Performance counter stats for './reference 2048':
+
+        4100013423      rC710:u                                                     
+
+       2.484792987 seconds time elapsed
+
+       2.479327000 seconds user
+       0.002999000 seconds sys
+
+
+
+ Performance counter stats for './vectorized 2048':
+
+        1025012305      rC710:u                                                     
+
+       1.729645755 seconds time elapsed
+
+       1.725025000 seconds user
+       0.002998000 seconds sys
+
+
+SIMD_INST_RETIRED.ANY -------------------------------------------------------
+
+
+ Performance counter stats for './reference 2048':
+
+                 0      rC71F:u                                                     
+
+       2.484289307 seconds time elapsed
+
+       2.480601000 seconds user
+       0.001998000 seconds sys
+
+
+
+ Performance counter stats for './vectorized 2048':
+
+                 0      rC71F:u                                                     
+
+       1.728851601 seconds time elapsed
+
+       1.723577000 seconds user
+       0.003996000 seconds sys
+
+
