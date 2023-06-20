@@ -13,39 +13,13 @@
 # Enforce exclusive node allocation, do not share with other jobs
 #SBATCH --exclusive
 
-echo "A"
-echo "  Reference:" \n
-perf stat ./A 
-echo "  Transformed:" \n
-perf stat ./A_SOL
-echo "B"
-echo "  Reference:" \n
-perf stat ./B
-echo "  Transformed:" \n
-perf stat ./B_SOL
-echo "C"
-echo "  Reference:" \n
-perf stat ./C
-echo "  Transformed:" \n
-perf stat ./C_SOL
-echo "D"
-echo "  Reference:" \n
-perf stat ./D
-echo "  Transformed:" \n
-perf stat ./D_SOL
-echo "E"
-echo "  Reference:" \n
-perf stat ./E
-echo "  Transformed:" \n
-perf stat ./E_SOL
-echo "F"
-echo "  Reference:" \n
-perf stat ./F
-echo "  Transformed:" \n
-perf stat ./F_SOL
-echo "G"
-echo "  Reference:" \n
-perf stat ./G
-echo "  Transformed:" \n
-perf stat ./G_SOL
+files=(A B C D E F G)
+
+for f in files; do
+    echo "File: ${f}"
+    echo "  Reference:" \n
+    perf stat -e cycles,instructions,cache-references,cache-misses,branches,branch-misses ./${f} 
+    echo "  Transformed:" \n
+    perf stat -e cycles,instructions,cache-references,cache-misses,branches,branch-misses ./${f}_OPT
+done
 
