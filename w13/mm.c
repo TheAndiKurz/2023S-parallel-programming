@@ -5,20 +5,21 @@
 
 // allows the user to specify the problem size at compile time
 #ifndef N
-        //#define N 2048
-        #define N 1024
+        #define N 2048
 #endif
 
 #define IND(i, j) (i * N + j)
 
 // comment out to disable verification for big matrix sizes
-#define CHECK
+// #define CHECK
 
 // block size for matrix multiplication
-#define BLOCK_SIZE 32
+#define BLOCK_SIZE 128
+#define ALIGNMENT 32
 
 // initialize matrix
 void initMatrix(double *A) {
+    #pragma omp parallel for
     for(size_t i = 0; i < N; i++) {
         for(size_t j = 0; j < N; j++) {
             A[IND(i, j)] = (double) N * N / (0.5 * IND(i, j));
@@ -30,8 +31,8 @@ void initMatrix(double *A) {
 void multiplyMatrixBasic(double *A, double *B, double *C) {
     
     for(size_t i = 0; i < N; i++) {
-        for(size_t j = 0; j < N; j++) {
-            for(size_t k = 0; k < N; k++) {
+        for(size_t k = 0; k < N; k++) {
+            for(size_t j = 0; j < N; j++) {
                 C[IND(i, j)] += A[IND(i, k)] * B[IND(k, j)];
             }
         }
@@ -57,7 +58,20 @@ int checkMultiply(double *A, double *B, double *C) {
 }
 
 // (fast) matrix multiplication 
+void transposeMatrix(double *A, double* AT) {
+    #pragma omp parallel for collapse(2)
+    for(size_t i = 0; i < N; i++){
+        for(size_t j = 0; j < N; j++){
+            AT[IND(i, j)] = A[IND(j, i)];
+        }
+    }
+}
+
 void multiplyMatrix(double *A, double *B, double *C) {
+    
+    double* B_T = NULL;
+    posix_memalign(((void**)&B_T), ALIGNMENT, sizeof(double) * N * N);
+    transposeMatrix(B, B_T);
 
     #pragma omp parallel for collapse(3)
     for(size_t ii = 0; ii < N; ii += BLOCK_SIZE){
@@ -69,27 +83,20 @@ void multiplyMatrix(double *A, double *B, double *C) {
                 size_t k_lim = kk + BLOCK_SIZE < N ? kk + BLOCK_SIZE : N;
 
                 for(size_t i = ii; i < i_lim; i++){
-                    for(size_t k = kk; k < k_lim; k++){
-                        for(size_t j = jj; j < j_lim; j++){
-                            C[IND(i, j)] += A[IND(i, k)] * B[IND(k, j)];
+                    for(size_t j = jj; j < j_lim; j++){
+                        double sum = 0;
+                        #pragma omp simd reduction(+:sum) aligned(A, B_T: ALIGNMENT)
+                        for(size_t k = kk; k < k_lim; k++){
+                            sum += A[IND(i, k)] * B_T[IND(j, k)];
                         }
+                        C[IND(i, j)] = sum;
                     }
                 }
             }
         }
     }
-}
-
-void multiplyMatrix2(double *A, double *B, double *C) {
     
-    #pragma omp parallel for shared(A, B, C)
-    for(size_t i = 0; i < N; i++) {
-        for(size_t k = 0; k < N; k++) {
-            for(size_t j = 0; j < N; j++) {
-                C[IND(i, j)] += A[IND(i, k)] * B[IND(k, j)];
-            }
-        }
-    }
+    free(B_T);
 }
 
 int main() {
@@ -99,9 +106,18 @@ int main() {
     // where A and B are square matrices of the same size
 
     // feel free to change the allocation if required
-    double* A = malloc(sizeof(double) * N * N);
-    double* B = malloc(sizeof(double) * N * N);
-    double* C = calloc(N * N, sizeof(double));
+    // double* A = malloc(sizeof(double) * N * N);
+    // double* B = malloc(sizeof(double) * N * N);
+    // double* C = calloc(N * N, sizeof(double));
+    
+    // allocate aligned memory adresses:
+    double* A = NULL;
+    double* B = NULL;
+    double* C = NULL;
+    posix_memalign(((void**)&A), ALIGNMENT, sizeof(double) * N * N);
+    posix_memalign(((void**)&B), ALIGNMENT, sizeof(double) * N * N);
+    posix_memalign(((void**)&C), ALIGNMENT, sizeof(double) * N * N);
+    
 
     // init matrices
     initMatrix(A);
@@ -110,7 +126,7 @@ int main() {
     double timeStart = omp_get_wtime();
 
     // conduct multiplication
-    multiplyMatrix2(A, B, C);
+    multiplyMatrix(A, B, C);
 
     double timeEnd = omp_get_wtime();
 
